@@ -25,10 +25,10 @@ struct SongCarouselView: View {
 
     private func card(for song: Song) -> some View {
         let isCurrent = song.persistentModelID == currentSong?.persistentModelID
-        let size: CGFloat = isCurrent ? 150 : 108
+        let size: CGFloat = isCurrent ? 210 : 150
 
-        return VStack(spacing: 6) {
-            RoundedRectangle(cornerRadius: 14)
+        return VStack(spacing: 8) {
+            RoundedRectangle(cornerRadius: 18)
                 .fill(LinearGradient(
                     colors: [
                         Color(hue: song.cardHue, saturation: 0.6, brightness: 0.55),
@@ -39,16 +39,16 @@ struct SongCarouselView: View {
                 .frame(width: size, height: size)
                 .overlay(
                     Text(song.title.first.map(String.init) ?? "?")
-                        .font(.system(size: isCurrent ? 54 : 38, weight: .bold))
+                        .font(.system(size: isCurrent ? 76 : 52, weight: .bold))
                         .foregroundColor(.white.opacity(0.85))
                 )
                 .overlay(
-                    RoundedRectangle(cornerRadius: 14)
-                        .stroke(isCurrent ? Color.white : .clear, lineWidth: 2.5)
+                    RoundedRectangle(cornerRadius: 18)
+                        .stroke(isCurrent ? Color.white : .clear, lineWidth: 3)
                 )
 
             Text(song.title)
-                .font(.callout)
+                .font(isCurrent ? .title3 : .callout)
                 .fontWeight(isCurrent ? .bold : .regular)
                 .lineLimit(1)
             if !song.key.isEmpty {
@@ -57,6 +57,6 @@ struct SongCarouselView: View {
                     .foregroundStyle(.secondary)
             }
         }
-        .frame(width: max(size, 95))
+        .frame(width: max(size, 120))
     }
 }

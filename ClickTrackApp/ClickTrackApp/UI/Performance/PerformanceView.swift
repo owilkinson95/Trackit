@@ -2,6 +2,9 @@ import SwiftUI
 
 /// The full setlist performance screen — song carousel, arrangement
 /// timeline, transport, and mixer — matching Playback's performance view.
+/// Transport controls and settings live in the navigation bar rather than a
+/// separate toolbar row, leaving more vertical room for the song carousel
+/// and the arrangement timeline below it.
 struct PerformanceView: View {
     @EnvironmentObject private var engine: ClickEngine
     @Bindable var setlist: Setlist
@@ -9,6 +12,7 @@ struct PerformanceView: View {
     @State private var currentSong: Song?
     @State private var showingRouting = false
     @State private var showingEditor = false
+    @State private var showingClickSettings = false
 
     private var songs: [Song] {
         setlist.sortedItems.compactMap { $0.song }
@@ -19,11 +23,9 @@ struct PerformanceView: View {
             Color(red: 0.035, green: 0.035, blue: 0.04).ignoresSafeArea()
 
             VStack(spacing: 14) {
-                toolbar
-                    .padding(.horizontal)
-                    .padding(.top, 8)
-
                 if let currentSong {
+                    songHeader(for: currentSong)
+
                     SongCarouselView(songs: songs, currentSong: Binding(
                         get: { currentSong },
                         set: { selectSong($0) }
@@ -41,6 +43,7 @@ struct PerformanceView: View {
                     Spacer()
                 }
             }
+            .padding(.top, 10)
         }
         .foregroundColor(.white)
         .navigationTitle(setlist.name)
@@ -58,6 +61,9 @@ struct PerformanceView: View {
         .sheet(isPresented: $showingRouting) {
             OutputRoutingView()
         }
+        .sheet(isPresented: $showingClickSettings) {
+            ClickGuideSettingsView()
+        }
         .sheet(isPresented: $showingEditor) {
             if let currentSong {
                 NavigationStack {
@@ -65,58 +71,56 @@ struct PerformanceView: View {
                 }
             }
         }
+        .toolbar {
+            ToolbarItemGroup(placement: .primaryAction) {
+                toolbarIconButton("gobackward") { restart() }
+
+                Button {
+                    engine.isPlaying ? engine.stop() : engine.start()
+                } label: {
+                    RoundedRectangle(cornerRadius: 9)
+                        .fill(engine.isPlaying ? Color.red : Color.green)
+                        .frame(width: 48, height: 32)
+                        .overlay(
+                            Image(systemName: engine.isPlaying ? "stop.fill" : "play.fill")
+                                .font(.system(size: 14, weight: .bold))
+                                .foregroundColor(.white)
+                        )
+                }
+                .buttonStyle(.plain)
+
+                toolbarIconButton("metronome") { showingClickSettings = true }
+                toolbarIconButton("slider.horizontal.3") { showingRouting = true }
+                toolbarIconButton("pencil") { showingEditor = true }
+            }
+        }
     }
 
-    /// One dense dark bar — tempo, elapsed/total, transport, and quick
-    /// actions — matching Playback's compact toolbar rather than floating
-    /// text on a bare background.
-    private var toolbar: some View {
+    /// Tempo/time-signature/elapsed for the current song — part of the song
+    /// area rather than a separate toolbar, since it's information about
+    /// *this song*, not a transport control.
+    private func songHeader(for song: Song) -> some View {
         HStack(spacing: 16) {
-            if let currentSong {
-                statStack(formatted(currentSong.bpm), "BPM")
-                divider
-                statStack("\(currentSong.beatsPerBar)/4", "TIME")
-                divider
-            }
-
+            statStack(formatted(song.bpm), "BPM")
+            divider
+            statStack("\(song.beatsPerBar)/4", "TIME")
+            divider
             statStack(elapsedText, totalText)
-
             Spacer()
-
-            toolbarIconButton("gobackward") { restart() }
-
-            Button {
-                engine.isPlaying ? engine.stop() : engine.start()
-            } label: {
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(engine.isPlaying ? Color.red : Color.green)
-                    .frame(width: 68, height: 48)
-                    .overlay(
-                        Image(systemName: engine.isPlaying ? "stop.fill" : "play.fill")
-                            .font(.system(size: 19, weight: .bold))
-                            .foregroundColor(.white)
-                    )
-            }
-            .buttonStyle(.plain)
-
-            toolbarIconButton("slider.horizontal.3") { showingRouting = true }
-            toolbarIconButton("pencil") { showingEditor = true }
         }
-        .padding(.horizontal, 20)
-        .padding(.vertical, 14)
-        .background(RoundedRectangle(cornerRadius: 18).fill(Color.white.opacity(0.06)))
+        .padding(.horizontal)
     }
 
     private var divider: some View {
-        Rectangle().fill(Color.white.opacity(0.12)).frame(width: 1, height: 36)
+        Rectangle().fill(Color.white.opacity(0.12)).frame(width: 1, height: 28)
     }
 
     private func statStack(_ primary: String, _ secondary: String) -> some View {
         VStack(spacing: 2) {
             Text(primary)
-                .font(.system(size: 22, weight: .bold, design: .rounded))
+                .font(.system(size: 17, weight: .bold, design: .rounded))
             Text(secondary)
-                .font(.system(size: 11, weight: .medium))
+                .font(.system(size: 10, weight: .medium))
                 .foregroundStyle(.secondary)
                 .tracking(0.5)
         }
@@ -125,8 +129,8 @@ struct PerformanceView: View {
     private func toolbarIconButton(_ systemImage: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Image(systemName: systemImage)
-                .font(.system(size: 18))
-                .frame(width: 44, height: 44)
+                .font(.system(size: 15))
+                .frame(width: 32, height: 32)
                 .background(Circle().fill(Color.white.opacity(0.08)))
                 .foregroundColor(.white.opacity(0.85))
         }

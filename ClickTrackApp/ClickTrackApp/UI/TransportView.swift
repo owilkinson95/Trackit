@@ -7,6 +7,7 @@ struct TransportView: View {
     @State private var tapTempo = TapTempo()
     @State private var bpmText: String = "120"
     @State private var showingRouting = false
+    @State private var showingClickSettings = false
 
     private let subdivisionLabels = ["1/4", "1/8", "1/8T", "1/16"]
 
@@ -44,18 +45,33 @@ struct TransportView: View {
         }
         .foregroundColor(.white)
         .overlay(alignment: .topTrailing) {
-            Button {
-                showingRouting = true
-            } label: {
-                Image(systemName: "slider.horizontal.3")
-                    .font(.title3)
-                    .foregroundColor(.gray)
-                    .padding()
+            HStack(spacing: 2) {
+                Button {
+                    showingClickSettings = true
+                } label: {
+                    Image(systemName: "metronome")
+                        .font(.title3)
+                        .foregroundColor(.gray)
+                        .padding()
+                }
+                .buttonStyle(.plain)
+
+                Button {
+                    showingRouting = true
+                } label: {
+                    Image(systemName: "slider.horizontal.3")
+                        .font(.title3)
+                        .foregroundColor(.gray)
+                        .padding()
+                }
+                .buttonStyle(.plain)
             }
-            .buttonStyle(.plain)
         }
         .sheet(isPresented: $showingRouting) {
             OutputRoutingView()
+        }
+        .sheet(isPresented: $showingClickSettings) {
+            ClickGuideSettingsView()
         }
     }
 

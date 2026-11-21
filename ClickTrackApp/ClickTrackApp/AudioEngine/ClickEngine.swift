@@ -1,15 +1,19 @@
 import AVFoundation
 import Combine
 
-/// Drives the infinite click loop. One AVAudioPlayerNode, one looping buffer.
-/// Changing tempo/time-signature rebuilds the buffer and reschedules at the
-/// next loop boundary rather than mid-bar, so the click never stutters.
+/// Drives the infinite click loop. Three AVAudioPlayerNodes — Accent, Beat,
+/// and Guide — each with their own looping buffer and their own mixer
+/// fader, so the downbeat accent, the regular click, and the reference
+/// guide pulse can each be balanced independently, like Playback's mixer.
+/// Changing tempo/time-signature/sound/guide mode rebuilds all three
+/// buffers and reschedules at the next loop boundary rather than mid-bar,
+/// so the click never stutters.
 ///
 /// Output routing (which physical channel(s) carry the click) is implemented
-/// by generating the loop buffer directly in the device's full channel count,
-/// with real audio only in the assigned channels and silence elsewhere —
-/// see `ChannelRouter`. That avoids needing Core Audio's channel-map APIs
-/// and works the same way on macOS and iOS.
+/// by generating the loop buffers directly in the device's full channel
+/// count, with real audio only in the assigned channels and silence
+/// elsewhere — see `ChannelRouter`. That avoids needing Core Audio's
+/// channel-map APIs and works the same way on macOS and iOS.
 @MainActor
 final class ClickEngine: ObservableObject {
 
@@ -29,34 +33,69 @@ final class ClickEngine: ObservableObject {
     /// Seconds since Play was pressed — drives the elapsed-time display and
     /// the performance-screen playhead. Resets on stop.
     @Published private(set) var elapsedSeconds: Double = 0
-    @Published var clickVolume: Double = ClickEngine.loadDouble(key: ClickEngine.clickVolumeKey, default: 0.8) {
-        didSet { persistDouble(Self.clickVolumeKey, clickVolume); updateClickOutputVolume() }
+
+    @Published var accentVolume: Double = ClickEngine.loadDouble(key: ClickEngine.accentVolumeKey, default: 0.9) {
+        didSet { persistDouble(Self.accentVolumeKey, accentVolume); updateOutputVolumes() }
     }
-    @Published var clickMuted = false {
-        didSet { updateClickOutputVolume() }
+    @Published var accentMuted = false {
+        didSet { updateOutputVolumes() }
     }
-    /// Scales everything in the mix — right now that's just the click,
-    /// since there's no stem-audio playback engine yet, but this is where
-    /// that mix-down happens once there is one.
+    @Published var beatVolume: Double = ClickEngine.loadDouble(key: ClickEngine.beatVolumeKey, default: 0.8) {
+        didSet { persistDouble(Self.beatVolumeKey, beatVolume); updateOutputVolumes() }
+    }
+    @Published var beatMuted = false {
+        didSet { updateOutputVolumes() }
+    }
+    /// A soft reference pulse, independent of the click, to help singers
+    /// and players land pitches and entrances. Off and silent by default —
+    /// `guideMode` decides when it sounds, this fader decides how loud.
+    @Published var guideVolume: Double = ClickEngine.loadDouble(key: ClickEngine.guideVolumeKey, default: 0.0) {
+        didSet { persistDouble(Self.guideVolumeKey, guideVolume); updateOutputVolumes() }
+    }
+    @Published var guideMuted = false {
+        didSet { updateOutputVolumes() }
+    }
+    @Published var guideMode: GuideMode = ClickEngine.loadGuideMode() {
+        didSet {
+            persistGuideMode()
+            if isPlaying { scheduleLoop() }
+        }
+    }
+    @Published var clickSound: ClickSound = ClickEngine.loadClickSound() {
+        didSet {
+            persistClickSound()
+            if isPlaying { scheduleLoop() }
+        }
+    }
+    /// Scales everything in the mix — click, guide, and (once there's a
+    /// stem-audio playback engine) tracks.
     @Published var masterVolume: Double = ClickEngine.loadDouble(key: ClickEngine.masterVolumeKey, default: 1.0) {
-        didSet { persistDouble(Self.masterVolumeKey, masterVolume); updateClickOutputVolume() }
+        didSet { persistDouble(Self.masterVolumeKey, masterVolume); updateOutputVolumes() }
     }
 
     private let engine = AVAudioEngine()
-    private let player = AVAudioPlayerNode()
+    private let accentPlayer = AVAudioPlayerNode()
+    private let beatPlayer = AVAudioPlayerNode()
+    private let guidePlayer = AVAudioPlayerNode()
     private var isGraphReady = false
     private var connectedChannelCount = 2
     private var transportTimer: Timer?
 
     private static let clickChannelsKey = "clickOutputChannels"
-    private static let clickVolumeKey = "clickVolume"
+    private static let accentVolumeKey = "accentVolume"
+    private static let beatVolumeKey = "beatVolume"
+    private static let guideVolumeKey = "guideVolume"
+    private static let guideModeKey = "guideMode"
+    private static let clickSoundKey = "clickSound"
     private static let masterVolumeKey = "masterVolume"
 
     init() {
         clickChannels = Self.loadClickChannels()
-        engine.attach(player)
+        for player in [accentPlayer, beatPlayer, guidePlayer] {
+            engine.attach(player)
+        }
         connectGraph(channelCount: connectedChannelCount)
-        updateClickOutputVolume()
+        updateOutputVolumes()
 
         NotificationCenter.default.addObserver(
             forName: .AVAudioEngineConfigurationChange, object: engine, queue: .main
@@ -79,7 +118,9 @@ final class ClickEngine: ObservableObject {
             }
             refreshDeviceChannelCount()
             scheduleLoop()
-            player.play()
+            accentPlayer.play()
+            beatPlayer.play()
+            guidePlayer.play()
             isPlaying = true
             startTransportClock()
         } catch {
@@ -89,7 +130,9 @@ final class ClickEngine: ObservableObject {
 
     func stop() {
         guard isPlaying else { return }
-        player.stop()
+        accentPlayer.stop()
+        beatPlayer.stop()
+        guidePlayer.stop()
         isPlaying = false
         stopTransportClock()
     }
@@ -100,9 +143,13 @@ final class ClickEngine: ObservableObject {
     func update(pattern newPattern: ClickGenerator.Pattern) {
         pattern = newPattern
         if isPlaying {
-            player.stop()
+            accentPlayer.stop()
+            beatPlayer.stop()
+            guidePlayer.stop()
             scheduleLoop()
-            player.play()
+            accentPlayer.play()
+            beatPlayer.play()
+            guidePlayer.play()
             startTransportClock()
         }
     }
@@ -128,24 +175,33 @@ final class ClickEngine: ObservableObject {
 
     private func connectGraph(channelCount: Int) {
         guard let format = AVAudioFormat(standardFormatWithSampleRate: ClickGenerator.sampleRate, channels: AVAudioChannelCount(channelCount)) else { return }
-        engine.disconnectNodeOutput(player)
+        let players = [accentPlayer, beatPlayer, guidePlayer]
+        for player in players {
+            engine.disconnectNodeOutput(player)
+        }
         engine.disconnectNodeOutput(engine.mainMixerNode)
-        engine.connect(player, to: engine.mainMixerNode, format: format)
+        for player in players {
+            engine.connect(player, to: engine.mainMixerNode, format: format)
+        }
         engine.connect(engine.mainMixerNode, to: engine.outputNode, format: format)
         connectedChannelCount = channelCount
     }
 
     private func scheduleLoop() {
-        let monoBuffer = ClickGenerator.buffer(for: pattern)
         let validChannels = clickChannels.filter { $0 < connectedChannelCount }
         let activeChannels = validChannels.isEmpty ? Set(0..<min(connectedChannelCount, 2)) : validChannels
-        let buffer = ChannelRouter.expand(
-            mono: monoBuffer,
-            toChannelCount: connectedChannelCount,
-            activeChannels: activeChannels,
-            sampleRate: ClickGenerator.sampleRate
-        )
-        player.scheduleBuffer(buffer, at: nil, options: .loops)
+
+        func expanded(_ mono: AVAudioPCMBuffer) -> AVAudioPCMBuffer {
+            ChannelRouter.expand(mono: mono, toChannelCount: connectedChannelCount, activeChannels: activeChannels, sampleRate: ClickGenerator.sampleRate)
+        }
+
+        let accentBuffer = expanded(ClickGenerator.buffer(for: pattern, layer: .accent, sound: clickSound))
+        let beatBuffer = expanded(ClickGenerator.buffer(for: pattern, layer: .beat, sound: clickSound))
+        let guideBuffer = expanded(ClickGenerator.guideBuffer(for: pattern, mode: guideMode))
+
+        accentPlayer.scheduleBuffer(accentBuffer, at: nil, options: .loops)
+        beatPlayer.scheduleBuffer(beatBuffer, at: nil, options: .loops)
+        guidePlayer.scheduleBuffer(guideBuffer, at: nil, options: .loops)
     }
 
     /// Drives `currentBeat` and `elapsedSeconds` on a plain Timer rather than
@@ -175,8 +231,10 @@ final class ClickEngine: ObservableObject {
         elapsedSeconds = 0
     }
 
-    private func updateClickOutputVolume() {
-        player.volume = clickMuted ? 0 : Float(clickVolume * masterVolume)
+    private func updateOutputVolumes() {
+        accentPlayer.volume = accentMuted ? 0 : Float(accentVolume * masterVolume)
+        beatPlayer.volume = beatMuted ? 0 : Float(beatVolume * masterVolume)
+        guidePlayer.volume = guideMuted ? 0 : Float(guideVolume * masterVolume)
     }
 
     private static func loadClickChannels() -> Set<Int> {
@@ -198,5 +256,27 @@ final class ClickEngine: ObservableObject {
 
     private func persistDouble(_ key: String, _ value: Double) {
         UserDefaults.standard.set(value, forKey: key)
+    }
+
+    private static func loadGuideMode() -> GuideMode {
+        guard let raw = UserDefaults.standard.string(forKey: guideModeKey), let mode = GuideMode(rawValue: raw) else {
+            return .off
+        }
+        return mode
+    }
+
+    private func persistGuideMode() {
+        UserDefaults.standard.set(guideMode.rawValue, forKey: Self.guideModeKey)
+    }
+
+    private static func loadClickSound() -> ClickSound {
+        guard let raw = UserDefaults.standard.string(forKey: clickSoundKey), let sound = ClickSound(rawValue: raw) else {
+            return .classic
+        }
+        return sound
+    }
+
+    private func persistClickSound() {
+        UserDefaults.standard.set(clickSound.rawValue, forKey: Self.clickSoundKey)
     }
 }

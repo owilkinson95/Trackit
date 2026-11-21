@@ -1,11 +1,14 @@
 import SwiftUI
 import SwiftData
 
-/// The bottom mixer strip — Click, each stem Track, and Master, each a
-/// vertical fader with solo/mute. Track volume/mute/solo are fully real
-/// and persisted, ready for real stem audio; until the app can import and
-/// play actual stem files, moving a Track's fader has no audible effect of
-/// its own — only Click and Master are wired to anything audible right now.
+/// The bottom mixer strip — Accent, Beat, Guide, each stem Track, and
+/// Master, each a vertical fader with solo/mute. Accent/Beat split the
+/// click's downbeat from its regular beat so each can be balanced on its
+/// own, matching Playback's separate click faders; Guide is a reference
+/// pulse, off by default (see `GuideMode` in Click & Guide settings). Track
+/// volume/mute/solo are fully real and persisted, ready for real stem
+/// audio; until the app can import and play actual stem files, moving a
+/// Track's fader has no audible effect of its own.
 ///
 /// Fills whatever vertical space its parent gives it — Playback's mixer is
 /// a full console filling most of the screen, not a thin strip pinned to
@@ -37,10 +40,36 @@ struct MixerView: View {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(alignment: .bottom, spacing: 18) {
                         FaderStrip(
-                            name: "Click",
+                            name: "Accent",
                             color: .green,
-                            volume: Binding(get: { engine.clickVolume }, set: { engine.clickVolume = $0 }),
-                            isMuted: Binding(get: { engine.clickMuted }, set: { engine.clickMuted = $0 }),
+                            volume: Binding(get: { engine.accentVolume }, set: { engine.accentVolume = $0 }),
+                            isMuted: Binding(get: { engine.accentMuted }, set: { engine.accentMuted = $0 }),
+                            isSoloed: .constant(false),
+                            showsSolo: false,
+                            faderHeight: faderHeight,
+                            onRename: nil,
+                            onDelete: nil
+                        )
+
+                        FaderStrip(
+                            name: "Beat",
+                            color: .white,
+                            volume: Binding(get: { engine.beatVolume }, set: { engine.beatVolume = $0 }),
+                            isMuted: Binding(get: { engine.beatMuted }, set: { engine.beatMuted = $0 }),
+                            isSoloed: .constant(false),
+                            showsSolo: false,
+                            faderHeight: faderHeight,
+                            onRename: nil,
+                            onDelete: nil
+                        )
+
+                        Rectangle().fill(Color.white.opacity(0.08)).frame(width: 1).frame(maxHeight: .infinity)
+
+                        FaderStrip(
+                            name: "Guide",
+                            color: .yellow,
+                            volume: Binding(get: { engine.guideVolume }, set: { engine.guideVolume = $0 }),
+                            isMuted: Binding(get: { engine.guideMuted }, set: { engine.guideMuted = $0 }),
                             isSoloed: .constant(false),
                             showsSolo: false,
                             faderHeight: faderHeight,

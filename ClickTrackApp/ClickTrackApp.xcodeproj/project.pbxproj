@@ -59,6 +59,10 @@
 		3A98130AFA1A4FE0BD55E8D9 /* TimelineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6FD3DF03E7E4D459C44F983 /* TimelineView.swift */; };
 		7BDF01700F9F49B7B6844EF1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3E2D08C8C353408DA5FB4384 /* Assets.xcassets */; };
 		CB9161FF1F904A8A9B3A1CCA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3E2D08C8C353408DA5FB4384 /* Assets.xcassets */; };
+		1CCDDB51AB9966FBA1F20696 /* ClickSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33540C93BD1B0E491D3B366 /* ClickSettings.swift */; };
+		85D82424E31B4DB39C3F9A3F /* ClickGuideSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 240D1B141C860FE3E39CA727 /* ClickGuideSettingsView.swift */; };
+		3BF9E0D0630D1733A8AD5645 /* ClickSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C33540C93BD1B0E491D3B366 /* ClickSettings.swift */; };
+		99367633862E13CF76E49DE4 /* ClickGuideSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 240D1B141C860FE3E39CA727 /* ClickGuideSettingsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -90,6 +94,8 @@
 		3E2D08C8C353408DA5FB4384 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F095698AD2CE4160904A978D /* ClickTrack (Mac).app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ClickTrack (Mac).app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		47214859D6E24316B809945C /* ClickTrack (iOS).app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ClickTrack (iOS).app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C33540C93BD1B0E491D3B366 /* ClickSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEngine/ClickSettings.swift; sourceTree = "<group>"; };
+		240D1B141C860FE3E39CA727 /* ClickGuideSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UI/Performance/ClickGuideSettingsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -134,6 +140,7 @@
 				E32E479F97694D31B8AAD9E2 /* GetSongBPMSource.swift */,
 				865FB3DB0E71476EB1966DB8 /* TempoSearchView.swift */,
 				51A4EF601F3247DFB05F1493 /* ChannelRouter.swift */,
+				C33540C93BD1B0E491D3B366 /* ClickSettings.swift */,
 				28E2D85DB44F47349CA06143 /* OutputRoutingView.swift */,
 				1050B1834E1C4C03AAC5E16C /* SetlistFileTransfer.swift */,
 				3292135537684B53BB8C51AA /* TransferDocument.swift */,
@@ -143,6 +150,7 @@
 				83F876036946455BA08D7BFA /* MixerView.swift */,
 				22EFA2B8F12D44C7A470CFAF /* SongCarouselView.swift */,
 				B6FD3DF03E7E4D459C44F983 /* TimelineView.swift */,
+				240D1B141C860FE3E39CA727 /* ClickGuideSettingsView.swift */,
 				3E2D08C8C353408DA5FB4384 /* Assets.xcassets */,
 			);
 			path = ClickTrackApp;
@@ -250,6 +258,7 @@
 				4613FB41FD8F40F2AFD8D039 /* GetSongBPMSource.swift in Sources */,
 				C5F81C4DC40B42F0AADF3F1B /* TempoSearchView.swift in Sources */,
 				24DC2DFC30E74D5F8A6DA2D1 /* ChannelRouter.swift in Sources */,
+				1CCDDB51AB9966FBA1F20696 /* ClickSettings.swift in Sources */,
 				DA8C399501FE44A89555D70C /* OutputRoutingView.swift in Sources */,
 				B6C146A820D04B8FB9F08557 /* SetlistFileTransfer.swift in Sources */,
 				87908DBFCB974E308B4CD91E /* TransferDocument.swift in Sources */,
@@ -259,6 +268,7 @@
 				D3BB6579E9494F418183B11E /* MixerView.swift in Sources */,
 				79249DA8BA3D4A9297E8B9EE /* SongCarouselView.swift in Sources */,
 				919AA02E2B32466DA0AB34FC /* TimelineView.swift in Sources */,
+				85D82424E31B4DB39C3F9A3F /* ClickGuideSettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -282,6 +292,7 @@
 				85F17F126A6A41F0A022D726 /* GetSongBPMSource.swift in Sources */,
 				F19323A3352040CE8B786896 /* TempoSearchView.swift in Sources */,
 				BB0C3C74ACD1491F8AB1E8AC /* ChannelRouter.swift in Sources */,
+				3BF9E0D0630D1733A8AD5645 /* ClickSettings.swift in Sources */,
 				7C90CF36791B46688FC806EB /* OutputRoutingView.swift in Sources */,
 				BD37047F17E8482CB17C76E4 /* SetlistFileTransfer.swift in Sources */,
 				64877E2A83B64E85AD2C9C51 /* TransferDocument.swift in Sources */,
@@ -291,6 +302,7 @@
 				9BE9352F78BA4BEE8970A628 /* MixerView.swift in Sources */,
 				F9EED7D97A824679BFA98DC3 /* SongCarouselView.swift in Sources */,
 				3A98130AFA1A4FE0BD55E8D9 /* TimelineView.swift in Sources */,
+				99367633862E13CF76E49DE4 /* ClickGuideSettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
