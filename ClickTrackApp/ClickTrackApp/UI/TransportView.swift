@@ -6,6 +6,7 @@ struct TransportView: View {
     @EnvironmentObject private var engine: ClickEngine
     @State private var tapTempo = TapTempo()
     @State private var bpmText: String = "120"
+    @State private var showingRouting = false
 
     private let subdivisionLabels = ["1/4", "1/8", "1/8T", "1/16"]
 
@@ -40,6 +41,20 @@ struct TransportView: View {
             .padding(32)
         }
         .foregroundColor(.white)
+        .overlay(alignment: .topTrailing) {
+            Button {
+                showingRouting = true
+            } label: {
+                Image(systemName: "slider.horizontal.3")
+                    .font(.title3)
+                    .foregroundColor(.gray)
+                    .padding()
+            }
+            .buttonStyle(.plain)
+        }
+        .sheet(isPresented: $showingRouting) {
+            OutputRoutingView()
+        }
     }
 
     private var bpmDisplay: some View {

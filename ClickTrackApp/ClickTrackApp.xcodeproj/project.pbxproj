@@ -7,103 +7,111 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		84EADD6E67AB48ED8A770CEB /* ClickTrackApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2569AE6DE4DA417298AD678B /* ClickTrackApp.swift */; };
-		08269B07B1904D4EBF72E20E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD44ACC534B4543B1258241 /* ContentView.swift */; };
-		11F1F7B21A014C189912C121 /* ClickGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2514F638B9B340A0B9B2AE7C /* ClickGenerator.swift */; };
-		D94C7E38953C4C8FBA9120B0 /* ClickEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF4BFDD3082D4023B2037326 /* ClickEngine.swift */; };
-		01981EEFB2B744BB95E26969 /* TapTempo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10547B3ACC3248E8A08CA1EF /* TapTempo.swift */; };
-		53CF0C9172A3485BA541A049 /* TransportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC7633FAC624E2D9690B406 /* TransportView.swift */; };
-		030659E5A3B44379A56FEA91 /* Song.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10B1D96E8164D26B06AECEA /* Song.swift */; };
-		DF9D589B54A343C0979C39BC /* Setlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2413E5C52EEE4B5D8C45CB9F /* Setlist.swift */; };
-		6BBD29D7E728442E8A4FCF22 /* SongEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D33F3D4ECE464C4197F44F2B /* SongEditorView.swift */; };
-		149D01F228C14FF6BCECA295 /* SongLibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7E97B3C8A804C65B2DEC7FF /* SongLibraryView.swift */; };
-		6F3D16DA501244CAA1FCE215 /* SetlistsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F02CFD61B32D4BBCAE5B5166 /* SetlistsView.swift */; };
-		0C78035DAF1746CAAB7F662B /* SetlistDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6768FB2D4DD946CAB71490A3 /* SetlistDetailView.swift */; };
-		AD2A93180D4B44639F7B4714 /* TempoSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C65DA057384E17946B0F82 /* TempoSource.swift */; };
-		E6F95B27D07C43729CD4BF95 /* GetSongBPMSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57413200D89848E19A03C66E /* GetSongBPMSource.swift */; };
-		19358E7A8DD4418198A85B71 /* TempoSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE29CC546B854A889D9BC8C4 /* TempoSearchView.swift */; };
-		0B9C835457FB4144B77821F0 /* ClickTrackApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2569AE6DE4DA417298AD678B /* ClickTrackApp.swift */; };
-		92CE3494E55F42F8BAE24F4C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD44ACC534B4543B1258241 /* ContentView.swift */; };
-		D1474B47AA294C74A7BCC65A /* ClickGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2514F638B9B340A0B9B2AE7C /* ClickGenerator.swift */; };
-		121B15F3580740D0A2FBAFFC /* ClickEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF4BFDD3082D4023B2037326 /* ClickEngine.swift */; };
-		A38F55ADE8B84A918B183D23 /* TapTempo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10547B3ACC3248E8A08CA1EF /* TapTempo.swift */; };
-		34690797381E4556B41BCB82 /* TransportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC7633FAC624E2D9690B406 /* TransportView.swift */; };
-		A4585CEC09B44EED8A6A37F1 /* Song.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10B1D96E8164D26B06AECEA /* Song.swift */; };
-		4E2A49A014AA4C33A710C8D4 /* Setlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2413E5C52EEE4B5D8C45CB9F /* Setlist.swift */; };
-		8E86DBF2B3F94EA9AC664DE8 /* SongEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D33F3D4ECE464C4197F44F2B /* SongEditorView.swift */; };
-		4F3B3074ADCE44009A6AAD22 /* SongLibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7E97B3C8A804C65B2DEC7FF /* SongLibraryView.swift */; };
-		4614C73660104E49B2BCE7B4 /* SetlistsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F02CFD61B32D4BBCAE5B5166 /* SetlistsView.swift */; };
-		EE0E6E5D68D04818B0F77EE5 /* SetlistDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6768FB2D4DD946CAB71490A3 /* SetlistDetailView.swift */; };
-		7CA2E733544D4F3AA384CD76 /* TempoSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C65DA057384E17946B0F82 /* TempoSource.swift */; };
-		E00802E2EA5146C997DF7C81 /* GetSongBPMSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57413200D89848E19A03C66E /* GetSongBPMSource.swift */; };
-		9380F316BAD04C73B6120B62 /* TempoSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE29CC546B854A889D9BC8C4 /* TempoSearchView.swift */; };
-		9A2574AA48C3410B9BD6C8E8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B492AEF606C840F5AF1772EC /* Assets.xcassets */; };
-		910583EA79BE403CAF6741E4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B492AEF606C840F5AF1772EC /* Assets.xcassets */; };
+		E9D28AB2AABE45BCAAE61680 /* ClickTrackApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC2F59208CE04988ADEB513C /* ClickTrackApp.swift */; };
+		96064D47BC994B6ABF55A65A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00C86C991B0E4E1DB17165E6 /* ContentView.swift */; };
+		8498D229734743A48DA0B073 /* ClickGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26C8A13727B54787AA42B630 /* ClickGenerator.swift */; };
+		AE1861A8F7394ABC9FCED49A /* ClickEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90ADC73EA557413A9191D275 /* ClickEngine.swift */; };
+		63C6D01261F341C59DB4756B /* TapTempo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EAEBED324B8477CB9D33AF9 /* TapTempo.swift */; };
+		8BEB0AEDDE1E4D9D99F93451 /* TransportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 322C919C0A1D4EC2842186F2 /* TransportView.swift */; };
+		00336827CD344A9CA3D7266A /* Song.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38A4933E4000425FAA427945 /* Song.swift */; };
+		702F49D33BCC423AA9FF86BA /* Setlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2945C71E83D548089237249E /* Setlist.swift */; };
+		07D2FC5B63374C55BD1E8943 /* SongEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A21A45E73A06450C9657B077 /* SongEditorView.swift */; };
+		1E6EF0BD8255471C98C65B30 /* SongLibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1D5AB8E84824ADCB8605DC8 /* SongLibraryView.swift */; };
+		4387F71835394897A3FEB503 /* SetlistsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5932F67F01AD42268A47F39C /* SetlistsView.swift */; };
+		1875A26EEF4B40248A6A282A /* SetlistDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 739271749EB546B0918AC334 /* SetlistDetailView.swift */; };
+		CA755D9E470B45879B8ECEF6 /* TempoSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D175230254C4310B14B9851 /* TempoSource.swift */; };
+		2E5CEFB84BB94BD9B054E94E /* GetSongBPMSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8B1779E1B7F4E8CAB85A79E /* GetSongBPMSource.swift */; };
+		EAEFE3AAA47840B7AE3DE11B /* TempoSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A08CDD6FE63848F69D87A309 /* TempoSearchView.swift */; };
+		D997E763CCEA4949946E77E7 /* ChannelRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 646358016B4B4862BAF75957 /* ChannelRouter.swift */; };
+		2461A70A89FB418A96661A34 /* OutputRoutingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 791D5A240938458E8E79EC51 /* OutputRoutingView.swift */; };
+		A89E789B75AA4D04990193D5 /* ClickTrackApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC2F59208CE04988ADEB513C /* ClickTrackApp.swift */; };
+		39977D76478043269AA02003 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00C86C991B0E4E1DB17165E6 /* ContentView.swift */; };
+		49734AEDEE204255A165FF00 /* ClickGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26C8A13727B54787AA42B630 /* ClickGenerator.swift */; };
+		E4E3E29877B54BE6AB501C9B /* ClickEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90ADC73EA557413A9191D275 /* ClickEngine.swift */; };
+		FD0EE8B1B5E54AA7A3B40EA0 /* TapTempo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EAEBED324B8477CB9D33AF9 /* TapTempo.swift */; };
+		0AC21342EF154AFBAB2ACFCB /* TransportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 322C919C0A1D4EC2842186F2 /* TransportView.swift */; };
+		355C8F448DDA4116835655E2 /* Song.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38A4933E4000425FAA427945 /* Song.swift */; };
+		A68471A364B54EC595C5078B /* Setlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2945C71E83D548089237249E /* Setlist.swift */; };
+		F5F012A50EDF42D88A5EA70B /* SongEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A21A45E73A06450C9657B077 /* SongEditorView.swift */; };
+		5608AB6BE4DA449A8DDAF725 /* SongLibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1D5AB8E84824ADCB8605DC8 /* SongLibraryView.swift */; };
+		11DB829AA1794EF6879EE7F3 /* SetlistsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5932F67F01AD42268A47F39C /* SetlistsView.swift */; };
+		7B06139D2F7040DCB5FF41A7 /* SetlistDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 739271749EB546B0918AC334 /* SetlistDetailView.swift */; };
+		47584F4AEB4A43929C284A0D /* TempoSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D175230254C4310B14B9851 /* TempoSource.swift */; };
+		F65EC8FA40CA48F7A8EEEB68 /* GetSongBPMSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8B1779E1B7F4E8CAB85A79E /* GetSongBPMSource.swift */; };
+		ADC595151750490B821B95A1 /* TempoSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A08CDD6FE63848F69D87A309 /* TempoSearchView.swift */; };
+		1CCAB012F5444D03896D3103 /* ChannelRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 646358016B4B4862BAF75957 /* ChannelRouter.swift */; };
+		F89386AA73FE4F7F8732058B /* OutputRoutingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 791D5A240938458E8E79EC51 /* OutputRoutingView.swift */; };
+		47C05EF857EA4B90A10E1DC5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A6C31DE85D2E4CEEBD9D4A00 /* Assets.xcassets */; };
+		3DC818E20AB54F39AA54CB99 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A6C31DE85D2E4CEEBD9D4A00 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		2569AE6DE4DA417298AD678B /* ClickTrackApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App/ClickTrackApp.swift; sourceTree = "<group>"; };
-		ACD44ACC534B4543B1258241 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App/ContentView.swift; sourceTree = "<group>"; };
-		2514F638B9B340A0B9B2AE7C /* ClickGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEngine/ClickGenerator.swift; sourceTree = "<group>"; };
-		EF4BFDD3082D4023B2037326 /* ClickEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEngine/ClickEngine.swift; sourceTree = "<group>"; };
-		10547B3ACC3248E8A08CA1EF /* TapTempo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEngine/TapTempo.swift; sourceTree = "<group>"; };
-		BDC7633FAC624E2D9690B406 /* TransportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UI/TransportView.swift; sourceTree = "<group>"; };
-		A10B1D96E8164D26B06AECEA /* Song.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models/Song.swift; sourceTree = "<group>"; };
-		2413E5C52EEE4B5D8C45CB9F /* Setlist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models/Setlist.swift; sourceTree = "<group>"; };
-		D33F3D4ECE464C4197F44F2B /* SongEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UI/Songs/SongEditorView.swift; sourceTree = "<group>"; };
-		B7E97B3C8A804C65B2DEC7FF /* SongLibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UI/Songs/SongLibraryView.swift; sourceTree = "<group>"; };
-		F02CFD61B32D4BBCAE5B5166 /* SetlistsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UI/Setlists/SetlistsView.swift; sourceTree = "<group>"; };
-		6768FB2D4DD946CAB71490A3 /* SetlistDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UI/Setlists/SetlistDetailView.swift; sourceTree = "<group>"; };
-		85C65DA057384E17946B0F82 /* TempoSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TempoLookup/TempoSource.swift; sourceTree = "<group>"; };
-		57413200D89848E19A03C66E /* GetSongBPMSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TempoLookup/GetSongBPMSource.swift; sourceTree = "<group>"; };
-		FE29CC546B854A889D9BC8C4 /* TempoSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UI/Songs/TempoSearchView.swift; sourceTree = "<group>"; };
-		B492AEF606C840F5AF1772EC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		D71F60C805CF4C45A117A7EE /* ClickTrack (Mac).app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ClickTrack (Mac).app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		4C6E50E448A64A92AD1851D3 /* ClickTrack (iOS).app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ClickTrack (iOS).app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		BC2F59208CE04988ADEB513C /* ClickTrackApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App/ClickTrackApp.swift; sourceTree = "<group>"; };
+		00C86C991B0E4E1DB17165E6 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App/ContentView.swift; sourceTree = "<group>"; };
+		26C8A13727B54787AA42B630 /* ClickGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEngine/ClickGenerator.swift; sourceTree = "<group>"; };
+		90ADC73EA557413A9191D275 /* ClickEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEngine/ClickEngine.swift; sourceTree = "<group>"; };
+		4EAEBED324B8477CB9D33AF9 /* TapTempo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEngine/TapTempo.swift; sourceTree = "<group>"; };
+		322C919C0A1D4EC2842186F2 /* TransportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UI/TransportView.swift; sourceTree = "<group>"; };
+		38A4933E4000425FAA427945 /* Song.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models/Song.swift; sourceTree = "<group>"; };
+		2945C71E83D548089237249E /* Setlist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models/Setlist.swift; sourceTree = "<group>"; };
+		A21A45E73A06450C9657B077 /* SongEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UI/Songs/SongEditorView.swift; sourceTree = "<group>"; };
+		F1D5AB8E84824ADCB8605DC8 /* SongLibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UI/Songs/SongLibraryView.swift; sourceTree = "<group>"; };
+		5932F67F01AD42268A47F39C /* SetlistsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UI/Setlists/SetlistsView.swift; sourceTree = "<group>"; };
+		739271749EB546B0918AC334 /* SetlistDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UI/Setlists/SetlistDetailView.swift; sourceTree = "<group>"; };
+		3D175230254C4310B14B9851 /* TempoSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TempoLookup/TempoSource.swift; sourceTree = "<group>"; };
+		B8B1779E1B7F4E8CAB85A79E /* GetSongBPMSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TempoLookup/GetSongBPMSource.swift; sourceTree = "<group>"; };
+		A08CDD6FE63848F69D87A309 /* TempoSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UI/Songs/TempoSearchView.swift; sourceTree = "<group>"; };
+		646358016B4B4862BAF75957 /* ChannelRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEngine/ChannelRouter.swift; sourceTree = "<group>"; };
+		791D5A240938458E8E79EC51 /* OutputRoutingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UI/OutputRoutingView.swift; sourceTree = "<group>"; };
+		A6C31DE85D2E4CEEBD9D4A00 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		2CA371EF2FEF4557BE9CE682 /* ClickTrack (Mac).app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ClickTrack (Mac).app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7D91AD3054F146D4A9583282 /* ClickTrack (iOS).app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ClickTrack (iOS).app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		073BD7B2C1794A0DB69CB1DA /* Frameworks */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
-		62B95DB337664C06B6BE4CEF /* Frameworks */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+		BE2AA7CAD20F4447868F03FE /* Frameworks */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+		8751A6BB6A244607AA7610E9 /* Frameworks */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		E65477A3EF2F4FB6BABD9DDF = {
+		CA005DDE1DE545CB8CA458F0 = {
 			isa = PBXGroup;
 			children = (
-				BF3C940764E54083B6073234 /* ClickTrackApp */,
-				951E7BFE8DD14071BD7D028A /* Products */,
+				7C6623CC187A4C058B386AA6 /* ClickTrackApp */,
+				FD61A64B17AF4AE4A0A0C9F1 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		951E7BFE8DD14071BD7D028A /* Products */ = {
+		FD61A64B17AF4AE4A0A0C9F1 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D71F60C805CF4C45A117A7EE /* ClickTrack (Mac).app */,
-				4C6E50E448A64A92AD1851D3 /* ClickTrack (iOS).app */,
+				2CA371EF2FEF4557BE9CE682 /* ClickTrack (Mac).app */,
+				7D91AD3054F146D4A9583282 /* ClickTrack (iOS).app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		BF3C940764E54083B6073234 /* ClickTrackApp */ = {
+		7C6623CC187A4C058B386AA6 /* ClickTrackApp */ = {
 			isa = PBXGroup;
 			children = (
-				2569AE6DE4DA417298AD678B /* ClickTrackApp.swift */,
-				ACD44ACC534B4543B1258241 /* ContentView.swift */,
-				2514F638B9B340A0B9B2AE7C /* ClickGenerator.swift */,
-				EF4BFDD3082D4023B2037326 /* ClickEngine.swift */,
-				10547B3ACC3248E8A08CA1EF /* TapTempo.swift */,
-				BDC7633FAC624E2D9690B406 /* TransportView.swift */,
-				A10B1D96E8164D26B06AECEA /* Song.swift */,
-				2413E5C52EEE4B5D8C45CB9F /* Setlist.swift */,
-				D33F3D4ECE464C4197F44F2B /* SongEditorView.swift */,
-				B7E97B3C8A804C65B2DEC7FF /* SongLibraryView.swift */,
-				F02CFD61B32D4BBCAE5B5166 /* SetlistsView.swift */,
-				6768FB2D4DD946CAB71490A3 /* SetlistDetailView.swift */,
-				85C65DA057384E17946B0F82 /* TempoSource.swift */,
-				57413200D89848E19A03C66E /* GetSongBPMSource.swift */,
-				FE29CC546B854A889D9BC8C4 /* TempoSearchView.swift */,
-				B492AEF606C840F5AF1772EC /* Assets.xcassets */,
+				BC2F59208CE04988ADEB513C /* ClickTrackApp.swift */,
+				00C86C991B0E4E1DB17165E6 /* ContentView.swift */,
+				26C8A13727B54787AA42B630 /* ClickGenerator.swift */,
+				90ADC73EA557413A9191D275 /* ClickEngine.swift */,
+				4EAEBED324B8477CB9D33AF9 /* TapTempo.swift */,
+				322C919C0A1D4EC2842186F2 /* TransportView.swift */,
+				38A4933E4000425FAA427945 /* Song.swift */,
+				2945C71E83D548089237249E /* Setlist.swift */,
+				A21A45E73A06450C9657B077 /* SongEditorView.swift */,
+				F1D5AB8E84824ADCB8605DC8 /* SongLibraryView.swift */,
+				5932F67F01AD42268A47F39C /* SetlistsView.swift */,
+				739271749EB546B0918AC334 /* SetlistDetailView.swift */,
+				3D175230254C4310B14B9851 /* TempoSource.swift */,
+				B8B1779E1B7F4E8CAB85A79E /* GetSongBPMSource.swift */,
+				A08CDD6FE63848F69D87A309 /* TempoSearchView.swift */,
+				646358016B4B4862BAF75957 /* ChannelRouter.swift */,
+				791D5A240938458E8E79EC51 /* OutputRoutingView.swift */,
+				A6C31DE85D2E4CEEBD9D4A00 /* Assets.xcassets */,
 			);
 			path = ClickTrackApp;
 			sourceTree = "<group>";
@@ -111,47 +119,47 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		DE1B81F771294578AE4F1F51 /* ClickTrack (Mac) */ = {
+		0AD730DECDB24C6399E5DF9C /* ClickTrack (Mac) */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 7F9EAFB3B81844FDB94ED2BB /* Build configuration list for PBXNativeTarget "ClickTrack (Mac)" */;
+			buildConfigurationList = C66A1A2D5A02439E90E18C44 /* Build configuration list for PBXNativeTarget "ClickTrack (Mac)" */;
 			buildPhases = (
-				553A7CF699214757A9A62325 /* Sources */,
-				073BD7B2C1794A0DB69CB1DA /* Frameworks */,
-				4A0C11ACAE7D46C1A137953B /* Resources */,
+				57FACF94A6AC40509460404D /* Sources */,
+				BE2AA7CAD20F4447868F03FE /* Frameworks */,
+				292F1FC42CA9416282B7A75D /* Resources */,
 			);
 			buildRules = ();
 			dependencies = ();
 			name = "ClickTrack (Mac)";
 			productName = "ClickTrack (Mac)";
-			productReference = D71F60C805CF4C45A117A7EE /* ClickTrack (Mac).app */;
+			productReference = 2CA371EF2FEF4557BE9CE682 /* ClickTrack (Mac).app */;
 			productType = "com.apple.product-type.application";
 		};
-		0440B96BDCF14413A0E84C75 /* ClickTrack (iOS) */ = {
+		1DF1445A335B418494109E86 /* ClickTrack (iOS) */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 8289835AFE044B4881ED12C4 /* Build configuration list for PBXNativeTarget "ClickTrack (iOS)" */;
+			buildConfigurationList = 2CA5955266D84188B6CB799A /* Build configuration list for PBXNativeTarget "ClickTrack (iOS)" */;
 			buildPhases = (
-				DCEE1B38DB98403C8C0F1FBC /* Sources */,
-				62B95DB337664C06B6BE4CEF /* Frameworks */,
-				CE15DA480E6947AF878E9F81 /* Resources */,
+				02F8ACA7556A432A9F90054D /* Sources */,
+				8751A6BB6A244607AA7610E9 /* Frameworks */,
+				304AF914F77A4F1DA85A0127 /* Resources */,
 			);
 			buildRules = ();
 			dependencies = ();
 			name = "ClickTrack (iOS)";
 			productName = "ClickTrack (iOS)";
-			productReference = 4C6E50E448A64A92AD1851D3 /* ClickTrack (iOS).app */;
+			productReference = 7D91AD3054F146D4A9583282 /* ClickTrack (iOS).app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		A66110D21931464A9778CB87 /* Project object */ = {
+		2DE5B6EDFFCF468E84EBB7C8 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1540;
 				LastUpgradeCheck = 1540;
 			};
-			buildConfigurationList = B98887C4E1A54C7082D6FB76 /* Build configuration list for PBXProject "ClickTrackApp" */;
+			buildConfigurationList = 2F18D7000BB5464A817E6A6C /* Build configuration list for PBXProject "ClickTrackApp" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -159,85 +167,89 @@
 				en,
 				Base,
 			);
-			mainGroup = E65477A3EF2F4FB6BABD9DDF;
-			productRefGroup = 951E7BFE8DD14071BD7D028A /* Products */;
+			mainGroup = CA005DDE1DE545CB8CA458F0;
+			productRefGroup = FD61A64B17AF4AE4A0A0C9F1 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				DE1B81F771294578AE4F1F51 /* ClickTrack (Mac) */,
-				0440B96BDCF14413A0E84C75 /* ClickTrack (iOS) */,
+				0AD730DECDB24C6399E5DF9C /* ClickTrack (Mac) */,
+				1DF1445A335B418494109E86 /* ClickTrack (iOS) */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		4A0C11ACAE7D46C1A137953B /* Resources */ = {
+		292F1FC42CA9416282B7A75D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9A2574AA48C3410B9BD6C8E8 /* Assets.xcassets in Resources */,
+				47C05EF857EA4B90A10E1DC5 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CE15DA480E6947AF878E9F81 /* Resources */ = {
+		304AF914F77A4F1DA85A0127 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				910583EA79BE403CAF6741E4 /* Assets.xcassets in Resources */,
+				3DC818E20AB54F39AA54CB99 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		553A7CF699214757A9A62325 /* Sources */ = {
+		57FACF94A6AC40509460404D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				84EADD6E67AB48ED8A770CEB /* ClickTrackApp.swift in Sources */,
-				08269B07B1904D4EBF72E20E /* ContentView.swift in Sources */,
-				11F1F7B21A014C189912C121 /* ClickGenerator.swift in Sources */,
-				D94C7E38953C4C8FBA9120B0 /* ClickEngine.swift in Sources */,
-				01981EEFB2B744BB95E26969 /* TapTempo.swift in Sources */,
-				53CF0C9172A3485BA541A049 /* TransportView.swift in Sources */,
-				030659E5A3B44379A56FEA91 /* Song.swift in Sources */,
-				DF9D589B54A343C0979C39BC /* Setlist.swift in Sources */,
-				6BBD29D7E728442E8A4FCF22 /* SongEditorView.swift in Sources */,
-				149D01F228C14FF6BCECA295 /* SongLibraryView.swift in Sources */,
-				6F3D16DA501244CAA1FCE215 /* SetlistsView.swift in Sources */,
-				0C78035DAF1746CAAB7F662B /* SetlistDetailView.swift in Sources */,
-				AD2A93180D4B44639F7B4714 /* TempoSource.swift in Sources */,
-				E6F95B27D07C43729CD4BF95 /* GetSongBPMSource.swift in Sources */,
-				19358E7A8DD4418198A85B71 /* TempoSearchView.swift in Sources */,
+				E9D28AB2AABE45BCAAE61680 /* ClickTrackApp.swift in Sources */,
+				96064D47BC994B6ABF55A65A /* ContentView.swift in Sources */,
+				8498D229734743A48DA0B073 /* ClickGenerator.swift in Sources */,
+				AE1861A8F7394ABC9FCED49A /* ClickEngine.swift in Sources */,
+				63C6D01261F341C59DB4756B /* TapTempo.swift in Sources */,
+				8BEB0AEDDE1E4D9D99F93451 /* TransportView.swift in Sources */,
+				00336827CD344A9CA3D7266A /* Song.swift in Sources */,
+				702F49D33BCC423AA9FF86BA /* Setlist.swift in Sources */,
+				07D2FC5B63374C55BD1E8943 /* SongEditorView.swift in Sources */,
+				1E6EF0BD8255471C98C65B30 /* SongLibraryView.swift in Sources */,
+				4387F71835394897A3FEB503 /* SetlistsView.swift in Sources */,
+				1875A26EEF4B40248A6A282A /* SetlistDetailView.swift in Sources */,
+				CA755D9E470B45879B8ECEF6 /* TempoSource.swift in Sources */,
+				2E5CEFB84BB94BD9B054E94E /* GetSongBPMSource.swift in Sources */,
+				EAEFE3AAA47840B7AE3DE11B /* TempoSearchView.swift in Sources */,
+				D997E763CCEA4949946E77E7 /* ChannelRouter.swift in Sources */,
+				2461A70A89FB418A96661A34 /* OutputRoutingView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		DCEE1B38DB98403C8C0F1FBC /* Sources */ = {
+		02F8ACA7556A432A9F90054D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0B9C835457FB4144B77821F0 /* ClickTrackApp.swift in Sources */,
-				92CE3494E55F42F8BAE24F4C /* ContentView.swift in Sources */,
-				D1474B47AA294C74A7BCC65A /* ClickGenerator.swift in Sources */,
-				121B15F3580740D0A2FBAFFC /* ClickEngine.swift in Sources */,
-				A38F55ADE8B84A918B183D23 /* TapTempo.swift in Sources */,
-				34690797381E4556B41BCB82 /* TransportView.swift in Sources */,
-				A4585CEC09B44EED8A6A37F1 /* Song.swift in Sources */,
-				4E2A49A014AA4C33A710C8D4 /* Setlist.swift in Sources */,
-				8E86DBF2B3F94EA9AC664DE8 /* SongEditorView.swift in Sources */,
-				4F3B3074ADCE44009A6AAD22 /* SongLibraryView.swift in Sources */,
-				4614C73660104E49B2BCE7B4 /* SetlistsView.swift in Sources */,
-				EE0E6E5D68D04818B0F77EE5 /* SetlistDetailView.swift in Sources */,
-				7CA2E733544D4F3AA384CD76 /* TempoSource.swift in Sources */,
-				E00802E2EA5146C997DF7C81 /* GetSongBPMSource.swift in Sources */,
-				9380F316BAD04C73B6120B62 /* TempoSearchView.swift in Sources */,
+				A89E789B75AA4D04990193D5 /* ClickTrackApp.swift in Sources */,
+				39977D76478043269AA02003 /* ContentView.swift in Sources */,
+				49734AEDEE204255A165FF00 /* ClickGenerator.swift in Sources */,
+				E4E3E29877B54BE6AB501C9B /* ClickEngine.swift in Sources */,
+				FD0EE8B1B5E54AA7A3B40EA0 /* TapTempo.swift in Sources */,
+				0AC21342EF154AFBAB2ACFCB /* TransportView.swift in Sources */,
+				355C8F448DDA4116835655E2 /* Song.swift in Sources */,
+				A68471A364B54EC595C5078B /* Setlist.swift in Sources */,
+				F5F012A50EDF42D88A5EA70B /* SongEditorView.swift in Sources */,
+				5608AB6BE4DA449A8DDAF725 /* SongLibraryView.swift in Sources */,
+				11DB829AA1794EF6879EE7F3 /* SetlistsView.swift in Sources */,
+				7B06139D2F7040DCB5FF41A7 /* SetlistDetailView.swift in Sources */,
+				47584F4AEB4A43929C284A0D /* TempoSource.swift in Sources */,
+				F65EC8FA40CA48F7A8EEEB68 /* GetSongBPMSource.swift in Sources */,
+				ADC595151750490B821B95A1 /* TempoSearchView.swift in Sources */,
+				1CCAB012F5444D03896D3103 /* ChannelRouter.swift in Sources */,
+				F89386AA73FE4F7F8732058B /* OutputRoutingView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		CCD2EFA0FE8E4446B700D976 /* Debug */ = {
+		029400EF56E942CABCB0997C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -296,7 +308,7 @@
 			};
 			name = Debug;
 		};
-		100495B946F94468BCB42257 /* Release */ = {
+		EDC95BD0A63F486A88F3477C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -348,7 +360,7 @@
 			};
 			name = Release;
 		};
-		C7F2880997E54DFC9AD1561B /* Debug */ = {
+		C83E6073487841DAA7A3C714 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -376,7 +388,7 @@
 			};
 			name = Debug;
 		};
-		E4270EBBE5E24B56A0A97B97 /* Release */ = {
+		599A2C8B0F914BCCA4C0BD29 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -404,7 +416,7 @@
 			};
 			name = Release;
 		};
-		5873C2D1F942434482412611 /* Debug */ = {
+		9573C4E6BC2E49E8A5C94779 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -434,7 +446,7 @@
 			};
 			name = Debug;
 		};
-		CDE56A2CED6F44CAB785F37C /* Release */ = {
+		1F89EDA14D514422972B6528 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -467,34 +479,34 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		B98887C4E1A54C7082D6FB76 /* Build configuration list for PBXProject "ClickTrackApp" */ = {
+		2F18D7000BB5464A817E6A6C /* Build configuration list for PBXProject "ClickTrackApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				CCD2EFA0FE8E4446B700D976 /* Debug */,
-				100495B946F94468BCB42257 /* Release */,
+				029400EF56E942CABCB0997C /* Debug */,
+				EDC95BD0A63F486A88F3477C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		7F9EAFB3B81844FDB94ED2BB /* Build configuration list for PBXNativeTarget "ClickTrack (Mac)" */ = {
+		C66A1A2D5A02439E90E18C44 /* Build configuration list for PBXNativeTarget "ClickTrack (Mac)" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				C7F2880997E54DFC9AD1561B /* Debug */,
-				E4270EBBE5E24B56A0A97B97 /* Release */,
+				C83E6073487841DAA7A3C714 /* Debug */,
+				599A2C8B0F914BCCA4C0BD29 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		8289835AFE044B4881ED12C4 /* Build configuration list for PBXNativeTarget "ClickTrack (iOS)" */ = {
+		2CA5955266D84188B6CB799A /* Build configuration list for PBXNativeTarget "ClickTrack (iOS)" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				5873C2D1F942434482412611 /* Debug */,
-				CDE56A2CED6F44CAB785F37C /* Release */,
+				9573C4E6BC2E49E8A5C94779 /* Debug */,
+				1F89EDA14D514422972B6528 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = A66110D21931464A9778CB87 /* Project object */;
+	rootObject = 2DE5B6EDFFCF468E84EBB7C8 /* Project object */;
 }

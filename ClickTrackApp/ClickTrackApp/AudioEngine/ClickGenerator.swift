@@ -18,8 +18,10 @@ enum ClickGenerator {
     }
 
     /// One bar of audio, click-per-subdivision, at the given pattern.
+    /// Mono — `ChannelRouter` expands this to however many output channels
+    /// the active device/routing assignment calls for.
     static func buffer(for pattern: Pattern) -> AVAudioPCMBuffer {
-        let format = AVAudioFormat(standardFormatWithSampleRate: sampleRate, channels: 2)!
+        let format = AVAudioFormat(standardFormatWithSampleRate: sampleRate, channels: 1)!
         let secondsPerBeat = 60.0 / pattern.bpm
         let ticksPerBar = pattern.beatsPerBar * pattern.subdivision
         let secondsPerTick = secondsPerBeat / Double(pattern.subdivision)
@@ -32,21 +34,20 @@ enum ClickGenerator {
         let frameCount = Int(buffer.frameLength)
         for frame in 0..<frameCount {
             channelData[0][frame] = 0
-            channelData[1][frame] = 0
         }
 
         for tick in 0..<ticksPerBar {
             let isAccent = pattern.accentFirstBeat && tick % pattern.subdivision == 0 && tick == 0
             let isBeat = tick % pattern.subdivision == 0
             let startFrame = Int(Double(tick) * secondsPerTick * sampleRate)
-            writeTick(into: channelData, frameCount: frameCount, startFrame: startFrame, accent: isAccent, strong: isBeat)
+            writeTick(into: channelData[0], frameCount: frameCount, startFrame: startFrame, accent: isAccent, strong: isBeat)
         }
 
         return buffer
     }
 
     /// A short, decaying sine burst — a clean, unmistakable metronome "tick".
-    private static func writeTick(into channelData: UnsafePointer<UnsafeMutablePointer<Float>>, frameCount: Int, startFrame: Int, accent: Bool, strong: Bool) {
+    private static func writeTick(into channel: UnsafeMutablePointer<Float>, frameCount: Int, startFrame: Int, accent: Bool, strong: Bool) {
         let frequency: Double = accent ? 1760 : (strong ? 1320 : 1000)
         let amplitude: Float = accent ? 0.9 : (strong ? 0.7 : 0.45)
         let durationSeconds = 0.016
@@ -58,8 +59,7 @@ enum ClickGenerator {
             let t = Double(i) / sampleRate
             let envelope = Float(exp(-t / 0.004))
             let sample = amplitude * envelope * Float(sin(2.0 * Double.pi * frequency * t))
-            channelData[0][frame] = sample
-            channelData[1][frame] = sample
+            channel[frame] = sample
         }
     }
 }
