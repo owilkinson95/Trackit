@@ -78,12 +78,12 @@ struct PerformanceView: View {
                 Button {
                     engine.isPlaying ? engine.stop() : engine.start()
                 } label: {
-                    RoundedRectangle(cornerRadius: 9)
+                    RoundedRectangle(cornerRadius: 11)
                         .fill(engine.isPlaying ? Color.red : Color.green)
-                        .frame(width: 48, height: 32)
+                        .frame(width: 72, height: 40)
                         .overlay(
                             Image(systemName: engine.isPlaying ? "stop.fill" : "play.fill")
-                                .font(.system(size: 14, weight: .bold))
+                                .font(.system(size: 19, weight: .bold))
                                 .foregroundColor(.white)
                         )
                 }
