@@ -145,7 +145,7 @@ private extension ClickSound {
     var tickDurationSeconds: Double {
         switch self {
         case .classic: return 0.016
-        case .woodblock: return 0.02
+        case .woodblock: return 0.014
         case .digital: return 0.012
         case .clave: return 0.01
         case .cowbell: return 0.05
@@ -158,7 +158,7 @@ private extension ClickSound {
     var decayConstant: Double {
         switch self {
         case .classic: return 0.004
-        case .woodblock: return 0.006
+        case .woodblock: return 0.0035
         case .digital: return 0.003
         case .clave: return 0.0025
         case .cowbell: return 0.016
@@ -175,9 +175,17 @@ private extension ClickSound {
         case .digital:
             return sin(2.0 * Double.pi * frequency * t) >= 0 ? 1 : -1
         case .woodblock:
-            let fundamental = sin(2.0 * Double.pi * frequency * t)
-            let overtone = 0.3 * sin(2.0 * Double.pi * frequency * 2 * t)
-            return Float(fundamental + overtone)
+            // A real woodblock reads as a hard "knock" transient plus a
+            // short, dull resonant body — not a pure sine, which just
+            // sounds like a soft beep. Triangle (not sine) partials are
+            // duller/woodier, and an inharmonic second partial (2.76×,
+            // not a clean octave) avoids sounding like a clean musical
+            // tone.
+            let fundamental = Self.triangleWave(frequency: frequency, t: t)
+            let overtone = 0.35 * Self.triangleWave(frequency: frequency * 2.76, t: t)
+            let knockDuration = 0.0012
+            let knock = t < knockDuration ? Double.random(in: -1...1) * (1 - t / knockDuration) * 0.6 : 0
+            return Float(fundamental + overtone + knock)
         case .clave:
             return Float.random(in: -1...1)
         case .cowbell:
@@ -199,5 +207,13 @@ private extension ClickSound {
         case .beep:
             return Float(sin(2.0 * Double.pi * frequency * t))
         }
+    }
+
+    /// A triangle wave in [-1, 1] — duller and less harmonically "clean"
+    /// than a sine, which is most of what makes wood/mallet percussion
+    /// read as wood rather than an electronic tone.
+    private static func triangleWave(frequency: Double, t: Double) -> Double {
+        let phase = (frequency * t).truncatingRemainder(dividingBy: 1)
+        return 4 * abs(phase - 0.5) - 1
     }
 }
