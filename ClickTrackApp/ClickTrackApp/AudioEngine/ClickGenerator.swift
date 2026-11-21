@@ -19,18 +19,37 @@ enum ClickGenerator {
 
     /// Which click layer a tick belongs to. Each layer plays on its own
     /// `AVAudioPlayerNode` so it gets its own mixer fader — matching
-    /// Playback's separate Accent/Beat click controls — instead of a single
-    /// combined click volume.
+    /// Playback's separate Accent/1⁄4/1⁄8/1⁄16 click controls — instead of a
+    /// single combined click volume. Which tiers actually have any ticks in
+    /// a given bar depends on `Pattern.subdivision`: at `subdivision == 1`
+    /// only Accent/Quarter have content, and Eighth/Sixteenth are silent
+    /// (empty buffers) until a finer subdivision is chosen.
     enum Layer {
         case accent
-        case beat
+        case quarter
+        case eighth
+        case sixteenth
+    }
+
+    /// Which layer a given tick (0-based, within the bar) belongs to, for
+    /// the given pattern's beat/subdivision grid.
+    private static func layer(forTick tick: Int, pattern: Pattern) -> Layer {
+        if pattern.accentFirstBeat && tick == 0 { return .accent }
+        let sub = pattern.subdivision
+        let posInBeat = tick % sub
+        if posInBeat == 0 { return .quarter }
+        if sub == 4 { return posInBeat == 2 ? .eighth : .sixteenth }
+        // subdivision == 2 (eighths) or == 3 (triplets): the one non-beat
+        // tick per beat is bucketed as the "eighth" tier — triplets have no
+        // clean eighth/sixteenth split, so this is a reasonable simplification.
+        return .eighth
     }
 
     /// One bar of audio for a single click layer, click-per-subdivision, at
-    /// the given pattern — ticks belonging to the other layer are left
+    /// the given pattern — ticks belonging to another layer are left
     /// silent. Mono — `ChannelRouter` expands this to however many output
     /// channels the active device/routing assignment calls for.
-    static func buffer(for pattern: Pattern, layer: Layer, sound: ClickSound) -> AVAudioPCMBuffer {
+    static func buffer(for pattern: Pattern, layer requestedLayer: Layer, sound: ClickSound) -> AVAudioPCMBuffer {
         let format = AVAudioFormat(standardFormatWithSampleRate: sampleRate, channels: 1)!
         let secondsPerBeat = 60.0 / pattern.bpm
         let ticksPerBar = pattern.beatsPerBar * pattern.subdivision
@@ -47,8 +66,8 @@ enum ClickGenerator {
         }
 
         for tick in 0..<ticksPerBar {
-            let isAccent = pattern.accentFirstBeat && tick == 0
-            guard (layer == .accent) == isAccent else { continue }
+            guard layer(forTick: tick, pattern: pattern) == requestedLayer else { continue }
+            let isAccent = requestedLayer == .accent
             let isStrongBeat = tick % pattern.subdivision == 0
             let startFrame = Int(Double(tick) * secondsPerTick * sampleRate)
             writeTick(into: channelData[0], frameCount: frameCount, startFrame: startFrame, accent: isAccent, strong: isStrongBeat, sound: sound)

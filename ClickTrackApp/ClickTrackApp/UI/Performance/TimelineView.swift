@@ -1,14 +1,16 @@
 import SwiftUI
 import SwiftData
 
-/// The arrangement timeline — a slim "Click" lane showing the infinite
-/// click loop, above a bigger, horizontally scrollable row of arrangement
-/// section blocks sized proportionally to each section's bar length, with
-/// a playhead that sweeps across while playing. Sections are fixed-width
-/// per bar rather than squeezed to fit the screen, so a long arrangement
-/// scrolls instead of shrinking illegibly. There's no audio file to show a
-/// real waveform of, so the click lane and sections (not amplitude) are
-/// what's actually visualized.
+/// One wide, horizontally scrollable timeline — the infinite click's
+/// rhythm running the full width as a continuous tick "waveform," with the
+/// arrangement's section blocks layered on top of it — matching Playback,
+/// where the click and the arrangement share a single scrollable strip
+/// rather than two separate boxes. Sections are fixed-width per bar rather
+/// than squeezed to fit the screen, so a long arrangement scrolls instead
+/// of shrinking illegibly, and the click ticks share that same per-bar
+/// grid so the two stay aligned. There's no audio file to show a real
+/// waveform of, so the ticks (not amplitude) are what's actually
+/// visualized.
 struct TimelineView: View {
     @Bindable var song: Song
     @ObservedObject var engine: ClickEngine
@@ -17,19 +19,25 @@ struct TimelineView: View {
     @State private var newSectionLabel = ""
     @State private var showingAddSection = false
 
-    /// Pixels per bar in the arrangement row — fixed, not proportional to
-    /// the available width, so sections stay a readable size and the row
-    /// scrolls instead of shrinking when the arrangement runs long.
+    /// Pixels per bar — fixed, not proportional to the available width, so
+    /// sections and ticks stay a readable size and the strip scrolls
+    /// instead of shrinking when the arrangement runs long.
     private static let barWidth: CGFloat = 40
-    private static let sectionBlockHeight: CGFloat = 86
-    private static let badgeSize: CGFloat = 30
+    private static let sectionBlockHeight: CGFloat = 70
+    private static let badgeSize: CGFloat = 28
+    private static let laneHeight: CGFloat = 112
+    /// How many bars wide the strip is when there's no arrangement yet, so
+    /// the click's infinite loop still reads as a long scrollable wave
+    /// rather than a tiny empty box.
+    private static let minimumBars = 32
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            clickLane
-
+        VStack(alignment: .leading, spacing: 6) {
             HStack {
                 Text("Arrangement").font(.subheadline).foregroundStyle(.secondary)
+                Image(systemName: "infinity")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
                 Spacer()
                 Button {
                     showingAddSection = true
@@ -40,37 +48,40 @@ struct TimelineView: View {
                 .buttonStyle(.plain)
             }
 
-            if song.sections.isEmpty {
-                Text("No sections yet — tap Add Section to sketch out the arrangement.")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-                    .frame(height: Self.sectionBlockHeight)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, 12)
-                    .background(RoundedRectangle(cornerRadius: 12).fill(Color.white.opacity(0.05)))
-            } else {
-                let totalBars = max(song.totalBars, 1)
-                let contentWidth = CGFloat(totalBars) * Self.barWidth
+            let totalBars = max(song.totalBars, Self.minimumBars)
+            let contentWidth = CGFloat(totalBars) * Self.barWidth
 
-                ScrollView(.horizontal, showsIndicators: false) {
-                    ZStack(alignment: .leading) {
+            ScrollView(.horizontal, showsIndicators: false) {
+                ZStack(alignment: .leading) {
+                    clickTicks(totalBars: totalBars)
+
+                    if song.sections.isEmpty {
+                        Text("No sections yet — tap Add Section to sketch out the arrangement.")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                            .padding(.horizontal, 12)
+                            .frame(height: Self.laneHeight, alignment: .leading)
+                    } else {
                         HStack(spacing: 2) {
                             ForEach(Array(song.sortedSections.enumerated()), id: \.element.id) { index, section in
                                 sectionBlock(section, index: index)
                             }
                         }
-                        if engine.isPlaying {
-                            Rectangle()
-                                .fill(Color.white)
-                                .frame(width: 2)
-                                .shadow(color: .white.opacity(0.6), radius: 3)
-                                .offset(x: playheadOffset(totalWidth: contentWidth))
-                        }
+                        .frame(height: Self.laneHeight, alignment: .bottom)
                     }
-                    .frame(width: contentWidth, alignment: .leading)
+
+                    if engine.isPlaying {
+                        Rectangle()
+                            .fill(Color.white)
+                            .frame(width: 2)
+                            .shadow(color: .white.opacity(0.6), radius: 3)
+                            .offset(x: playheadOffset(totalWidth: contentWidth))
+                    }
                 }
-                .frame(height: Self.sectionBlockHeight + Self.badgeSize + 8)
+                .frame(width: contentWidth, height: Self.laneHeight, alignment: .leading)
             }
+            .frame(height: Self.laneHeight)
+            .background(RoundedRectangle(cornerRadius: 10).fill(Color.white.opacity(0.04)))
         }
         .alert("New Section", isPresented: $showingAddSection) {
             TextField("Label (e.g. Verse 1)", text: $newSectionLabel)
@@ -96,8 +107,7 @@ struct TimelineView: View {
                 .background(Circle().fill(color(for: section.colorName)))
 
             RoundedRectangle(cornerRadius: 6)
-                .fill(color(for: section.colorName).opacity(0.35))
-                .overlay(tickTexture(color: color(for: section.colorName)))
+                .fill(color(for: section.colorName).opacity(0.3))
                 .overlay(
                     Text(section.label)
                         .font(.system(size: 13, weight: .semibold))
@@ -105,23 +115,13 @@ struct TimelineView: View {
                         .lineLimit(1)
                         .padding(.horizontal, 6)
                 )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 6)
+                        .stroke(color(for: section.colorName).opacity(0.6), lineWidth: 1)
+                )
                 .frame(width: blockWidth, height: Self.sectionBlockHeight)
         }
         .frame(width: blockWidth)
-    }
-
-    /// Purely decorative repeating tick marks to suggest the dense,
-    /// grid-like texture of Playback's arrangement bands — not a rendering
-    /// of real audio, since there's no audio file to analyze yet.
-    private func tickTexture(color: Color) -> some View {
-        GeometryReader { geo in
-            HStack(spacing: 3) {
-                ForEach(0..<max(Int(geo.size.width / 5), 0), id: \.self) { _ in
-                    Rectangle().fill(color.opacity(0.4)).frame(width: 1)
-                }
-            }
-        }
-        .clipShape(RoundedRectangle(cornerRadius: 4))
     }
 
     private func playheadOffset(totalWidth: CGFloat) -> CGFloat {
@@ -144,39 +144,22 @@ struct TimelineView: View {
         }
     }
 
-    // MARK: - Click lane
+    // MARK: - Click ticks
 
-    /// A slim, always-present, horizontally scrollable lane visualizing the
-    /// infinite click loop — tiled indefinitely rather than tied to the
-    /// song's bar count, since the click keeps looping regardless of the
-    /// arrangement. Bar height encodes each tick's role (accent, beat,
-    /// subdivision), colored to match the Accent/Beat mixer faders. This is
-    /// a generated illustration of the loop's rhythm, not a rendering of
-    /// real audio.
-    private var clickLane: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            HStack(spacing: 6) {
-                Text("Click").font(.subheadline).foregroundStyle(.secondary)
-                Image(systemName: "infinity")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                Spacer()
+    /// The infinite click's rhythm, drawn as a continuous tick "waveform"
+    /// across the whole strip, one bar at a time on the same per-bar grid
+    /// as the section blocks above it — so the two stay aligned as you
+    /// scroll. Tick height encodes each beat's role (accent, beat,
+    /// subdivision), colored to match the Accent/Beat mixer faders. This
+    /// is a generated illustration of the loop's rhythm, not a rendering
+    /// of real audio.
+    private func clickTicks(totalBars: Int) -> some View {
+        HStack(spacing: 0) {
+            ForEach(0..<totalBars, id: \.self) { _ in
+                clickBar
             }
-
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 6) {
-                    ForEach(0..<Self.clickLaneRepeatCount, id: \.self) { _ in
-                        clickBar
-                    }
-                }
-            }
-            .frame(height: Self.clickLaneHeight)
-            .background(RoundedRectangle(cornerRadius: 8).fill(Color.white.opacity(0.04)))
         }
     }
-
-    private static let clickLaneHeight: CGFloat = 32
-    private static let clickLaneRepeatCount = 24
 
     private var clickBar: some View {
         let ticksPerBar = max(engine.pattern.beatsPerBar * engine.pattern.subdivision, 1)
@@ -185,17 +168,17 @@ struct TimelineView: View {
                 clickTick(tick: tick)
             }
         }
-        .padding(.horizontal, 4)
+        .frame(width: Self.barWidth, height: Self.laneHeight)
     }
 
     private func clickTick(tick: Int) -> some View {
         let isAccent = engine.pattern.accentFirstBeat && tick == 0
         let isStrong = tick % engine.pattern.subdivision == 0
-        let height: CGFloat = isAccent ? 24 : (isStrong ? 16 : 9)
-        let color: Color = isAccent ? .green : .white.opacity(isStrong ? 0.7 : 0.3)
+        let height: CGFloat = isAccent ? 46 : (isStrong ? 30 : 16)
+        let color: Color = isAccent ? .green.opacity(0.8) : .white.opacity(isStrong ? 0.45 : 0.2)
         return RoundedRectangle(cornerRadius: 1.5)
             .fill(color)
             .frame(width: 3, height: height)
-            .frame(height: Self.clickLaneHeight, alignment: .center)
+            .frame(height: Self.laneHeight, alignment: .center)
     }
 }

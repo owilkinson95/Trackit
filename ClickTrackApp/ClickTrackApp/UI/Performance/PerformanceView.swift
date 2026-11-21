@@ -96,23 +96,18 @@ struct PerformanceView: View {
         }
     }
 
-    /// Tempo/time-signature/elapsed for the current song — part of the song
-    /// area rather than a separate toolbar, since it's information about
-    /// *this song*, not a transport control.
+    /// The current song's name and playback position — tempo and time
+    /// signature now live on each song's own carousel card instead, since
+    /// they're properties of that song, not of the performance in general.
     private func songHeader(for song: Song) -> some View {
         HStack(spacing: 16) {
-            statStack(formatted(song.bpm), "BPM")
-            divider
-            statStack("\(song.beatsPerBar)/4", "TIME")
-            divider
-            statStack(elapsedText, totalText)
+            Text(song.title)
+                .font(.title3.weight(.semibold))
+                .lineLimit(1)
             Spacer()
+            statStack(elapsedText, totalText)
         }
         .padding(.horizontal)
-    }
-
-    private var divider: some View {
-        Rectangle().fill(Color.white.opacity(0.12)).frame(width: 1, height: 28)
     }
 
     private func statStack(_ primary: String, _ secondary: String) -> some View {
@@ -159,9 +154,5 @@ struct PerformanceView: View {
         if engine.isPlaying { engine.stop() }
         currentSong = song
         engine.loadSong(song)
-    }
-
-    private func formatted(_ bpm: Double) -> String {
-        bpm.truncatingRemainder(dividingBy: 1) == 0 ? String(Int(bpm)) : String(format: "%.1f", bpm)
     }
 }

@@ -1,13 +1,17 @@
 import AVFoundation
 import Combine
 
-/// Drives the infinite click loop. Three AVAudioPlayerNodes — Accent, Beat,
-/// and Guide — each with their own looping buffer and their own mixer
-/// fader, so the downbeat accent, the regular click, and the reference
-/// guide pulse can each be balanced independently, like Playback's mixer.
-/// Changing tempo/time-signature/sound/guide mode rebuilds all three
-/// buffers and reschedules at the next loop boundary rather than mid-bar,
-/// so the click never stutters.
+/// Drives the infinite click loop. Five AVAudioPlayerNodes — Accent,
+/// Quarter (1/4), Eighth (1/8), Sixteenth (1/16), and Guide — each with
+/// their own looping buffer and their own mixer fader, so the downbeat
+/// accent and each subdivision tier can be balanced independently, like
+/// Playback's mixer. Which tiers actually have ticks in them depends on
+/// the pattern's subdivision (see `ClickGenerator.Layer`); at the coarsest
+/// subdivision, Eighth/Sixteenth are simply silent, so their faders have
+/// no audible effect until a finer subdivision is chosen.
+/// Changing tempo/time-signature/sound/guide mode rebuilds all the buffers
+/// and reschedules at the next loop boundary rather than mid-bar, so the
+/// click never stutters.
 ///
 /// Output routing (which physical channel(s) carry the click) is implemented
 /// by generating the loop buffers directly in the device's full channel
@@ -40,10 +44,22 @@ final class ClickEngine: ObservableObject {
     @Published var accentMuted = false {
         didSet { updateOutputVolumes() }
     }
-    @Published var beatVolume: Double = ClickEngine.loadDouble(key: ClickEngine.beatVolumeKey, default: 0.8) {
-        didSet { persistDouble(Self.beatVolumeKey, beatVolume); updateOutputVolumes() }
+    @Published var quarterVolume: Double = ClickEngine.loadDouble(key: ClickEngine.quarterVolumeKey, default: 0.8) {
+        didSet { persistDouble(Self.quarterVolumeKey, quarterVolume); updateOutputVolumes() }
     }
-    @Published var beatMuted = false {
+    @Published var quarterMuted = false {
+        didSet { updateOutputVolumes() }
+    }
+    @Published var eighthVolume: Double = ClickEngine.loadDouble(key: ClickEngine.eighthVolumeKey, default: 0.8) {
+        didSet { persistDouble(Self.eighthVolumeKey, eighthVolume); updateOutputVolumes() }
+    }
+    @Published var eighthMuted = false {
+        didSet { updateOutputVolumes() }
+    }
+    @Published var sixteenthVolume: Double = ClickEngine.loadDouble(key: ClickEngine.sixteenthVolumeKey, default: 0.8) {
+        didSet { persistDouble(Self.sixteenthVolumeKey, sixteenthVolume); updateOutputVolumes() }
+    }
+    @Published var sixteenthMuted = false {
         didSet { updateOutputVolumes() }
     }
     /// A soft reference pulse, independent of the click, to help singers
@@ -75,15 +91,23 @@ final class ClickEngine: ObservableObject {
 
     private let engine = AVAudioEngine()
     private let accentPlayer = AVAudioPlayerNode()
-    private let beatPlayer = AVAudioPlayerNode()
+    private let quarterPlayer = AVAudioPlayerNode()
+    private let eighthPlayer = AVAudioPlayerNode()
+    private let sixteenthPlayer = AVAudioPlayerNode()
     private let guidePlayer = AVAudioPlayerNode()
     private var isGraphReady = false
     private var connectedChannelCount = 2
     private var transportTimer: Timer?
 
+    private var allPlayers: [AVAudioPlayerNode] {
+        [accentPlayer, quarterPlayer, eighthPlayer, sixteenthPlayer, guidePlayer]
+    }
+
     private static let clickChannelsKey = "clickOutputChannels"
     private static let accentVolumeKey = "accentVolume"
-    private static let beatVolumeKey = "beatVolume"
+    private static let quarterVolumeKey = "quarterVolume"
+    private static let eighthVolumeKey = "eighthVolume"
+    private static let sixteenthVolumeKey = "sixteenthVolume"
     private static let guideVolumeKey = "guideVolume"
     private static let guideModeKey = "guideMode"
     private static let clickSoundKey = "clickSound"
@@ -91,7 +115,7 @@ final class ClickEngine: ObservableObject {
 
     init() {
         clickChannels = Self.loadClickChannels()
-        for player in [accentPlayer, beatPlayer, guidePlayer] {
+        for player in allPlayers {
             engine.attach(player)
         }
         connectGraph(channelCount: connectedChannelCount)
@@ -118,9 +142,7 @@ final class ClickEngine: ObservableObject {
             }
             refreshDeviceChannelCount()
             scheduleLoop()
-            accentPlayer.play()
-            beatPlayer.play()
-            guidePlayer.play()
+            for player in allPlayers { player.play() }
             isPlaying = true
             startTransportClock()
         } catch {
@@ -130,9 +152,7 @@ final class ClickEngine: ObservableObject {
 
     func stop() {
         guard isPlaying else { return }
-        accentPlayer.stop()
-        beatPlayer.stop()
-        guidePlayer.stop()
+        for player in allPlayers { player.stop() }
         isPlaying = false
         stopTransportClock()
     }
@@ -143,13 +163,9 @@ final class ClickEngine: ObservableObject {
     func update(pattern newPattern: ClickGenerator.Pattern) {
         pattern = newPattern
         if isPlaying {
-            accentPlayer.stop()
-            beatPlayer.stop()
-            guidePlayer.stop()
+            for player in allPlayers { player.stop() }
             scheduleLoop()
-            accentPlayer.play()
-            beatPlayer.play()
-            guidePlayer.play()
+            for player in allPlayers { player.play() }
             startTransportClock()
         }
     }
@@ -175,12 +191,11 @@ final class ClickEngine: ObservableObject {
 
     private func connectGraph(channelCount: Int) {
         guard let format = AVAudioFormat(standardFormatWithSampleRate: ClickGenerator.sampleRate, channels: AVAudioChannelCount(channelCount)) else { return }
-        let players = [accentPlayer, beatPlayer, guidePlayer]
-        for player in players {
+        for player in allPlayers {
             engine.disconnectNodeOutput(player)
         }
         engine.disconnectNodeOutput(engine.mainMixerNode)
-        for player in players {
+        for player in allPlayers {
             engine.connect(player, to: engine.mainMixerNode, format: format)
         }
         engine.connect(engine.mainMixerNode, to: engine.outputNode, format: format)
@@ -195,13 +210,11 @@ final class ClickEngine: ObservableObject {
             ChannelRouter.expand(mono: mono, toChannelCount: connectedChannelCount, activeChannels: activeChannels, sampleRate: ClickGenerator.sampleRate)
         }
 
-        let accentBuffer = expanded(ClickGenerator.buffer(for: pattern, layer: .accent, sound: clickSound))
-        let beatBuffer = expanded(ClickGenerator.buffer(for: pattern, layer: .beat, sound: clickSound))
-        let guideBuffer = expanded(ClickGenerator.guideBuffer(for: pattern, mode: guideMode))
-
-        accentPlayer.scheduleBuffer(accentBuffer, at: nil, options: .loops)
-        beatPlayer.scheduleBuffer(beatBuffer, at: nil, options: .loops)
-        guidePlayer.scheduleBuffer(guideBuffer, at: nil, options: .loops)
+        accentPlayer.scheduleBuffer(expanded(ClickGenerator.buffer(for: pattern, layer: .accent, sound: clickSound)), at: nil, options: .loops)
+        quarterPlayer.scheduleBuffer(expanded(ClickGenerator.buffer(for: pattern, layer: .quarter, sound: clickSound)), at: nil, options: .loops)
+        eighthPlayer.scheduleBuffer(expanded(ClickGenerator.buffer(for: pattern, layer: .eighth, sound: clickSound)), at: nil, options: .loops)
+        sixteenthPlayer.scheduleBuffer(expanded(ClickGenerator.buffer(for: pattern, layer: .sixteenth, sound: clickSound)), at: nil, options: .loops)
+        guidePlayer.scheduleBuffer(expanded(ClickGenerator.guideBuffer(for: pattern, mode: guideMode)), at: nil, options: .loops)
     }
 
     /// Drives `currentBeat` and `elapsedSeconds` on a plain Timer rather than
@@ -233,7 +246,9 @@ final class ClickEngine: ObservableObject {
 
     private func updateOutputVolumes() {
         accentPlayer.volume = accentMuted ? 0 : Float(accentVolume * masterVolume)
-        beatPlayer.volume = beatMuted ? 0 : Float(beatVolume * masterVolume)
+        quarterPlayer.volume = quarterMuted ? 0 : Float(quarterVolume * masterVolume)
+        eighthPlayer.volume = eighthMuted ? 0 : Float(eighthVolume * masterVolume)
+        sixteenthPlayer.volume = sixteenthMuted ? 0 : Float(sixteenthVolume * masterVolume)
         guidePlayer.volume = guideMuted ? 0 : Float(guideVolume * masterVolume)
     }
 
