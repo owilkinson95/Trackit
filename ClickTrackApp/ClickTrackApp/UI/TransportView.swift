@@ -9,8 +9,6 @@ struct TransportView: View {
     @State private var showingRouting = false
     @State private var showingClickSettings = false
 
-    private let subdivisionLabels = ["1/4", "1/8", "1/8T", "1/16"]
-
     var body: some View {
         ZStack {
             Color(red: 0.035, green: 0.035, blue: 0.04).ignoresSafeArea()
@@ -28,11 +26,8 @@ struct TransportView: View {
 
                 beatIndicator
 
-                HStack(spacing: 16) {
-                    stepper(title: "Beats/Bar", value: engine.pattern.beatsPerBar, range: 1...12) { newValue in
-                        apply { $0.beatsPerBar = newValue }
-                    }
-                    subdivisionPicker
+                stepper(title: "Beats/Bar", value: engine.pattern.beatsPerBar, range: 1...12) { newValue in
+                    apply { $0.beatsPerBar = newValue }
                 }
 
                 playStopButton
@@ -103,19 +98,6 @@ struct TransportView: View {
             }
         }
         .animation(.easeOut(duration: 0.1), value: engine.currentBeat)
-    }
-
-    private var subdivisionPicker: some View {
-        Picker("Subdivision", selection: Binding(
-            get: { engine.pattern.subdivision },
-            set: { newValue in apply { $0.subdivision = newValue } }
-        )) {
-            ForEach(Array(subdivisionLabels.enumerated()), id: \.offset) { index, label in
-                Text(label).tag(index + 1)
-            }
-        }
-        .pickerStyle(.segmented)
-        .frame(width: 220)
     }
 
     private func stepper(title: String, value: Int, range: ClosedRange<Int>, onChange: @escaping (Int) -> Void) -> some View {

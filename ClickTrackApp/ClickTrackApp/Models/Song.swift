@@ -8,7 +8,6 @@ final class Song {
     var key: String
     var bpm: Double
     var beatsPerBar: Int
-    var subdivision: Int
     var notes: String
     var createdAt: Date
 
@@ -27,7 +26,6 @@ final class Song {
         key: String = "",
         bpm: Double = 120,
         beatsPerBar: Int = 4,
-        subdivision: Int = 1,
         notes: String = ""
     ) {
         self.title = title
@@ -35,13 +33,12 @@ final class Song {
         self.key = key
         self.bpm = bpm
         self.beatsPerBar = beatsPerBar
-        self.subdivision = subdivision
         self.notes = notes
         self.createdAt = Date()
     }
 
     var pattern: ClickGenerator.Pattern {
-        ClickGenerator.Pattern(bpm: bpm, beatsPerBar: beatsPerBar, subdivision: subdivision, accentFirstBeat: true)
+        ClickGenerator.Pattern(bpm: bpm, beatsPerBar: beatsPerBar, accentFirstBeat: true)
     }
 
     var sortedTracks: [Track] {

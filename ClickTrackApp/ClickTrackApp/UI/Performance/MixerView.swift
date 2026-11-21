@@ -5,13 +5,12 @@ import SwiftData
 /// Track, and Master, each a vertical fader with solo/mute. Accent/1-4/
 /// 1-8/1-16 split the click into its downbeat and subdivision tiers so
 /// each can be balanced on its own, matching Playback's separate click
-/// faders — whichever tiers aren't part of the current subdivision
-/// setting are simply silent, so their faders have no audible effect
-/// until a finer subdivision is chosen. Guide is a reference pulse, off by
-/// default (see `GuideMode` in Click & Guide settings). Track volume/mute/
-/// solo are fully real and persisted, ready for real stem audio; until the
-/// app can import and play actual stem files, moving a Track's fader has
-/// no audible effect of its own.
+/// faders — the click always generates all four tiers, so every fader is
+/// always live; set a tier's fader to 0 to silence it. Guide is a
+/// reference pulse, off by default (see `GuideMode` in Click & Guide
+/// settings). Track volume/mute/solo are fully real and persisted, ready
+/// for real stem audio; until the app can import and play actual stem
+/// files, moving a Track's fader has no audible effect of its own.
 ///
 /// Fills whatever vertical space its parent gives it — Playback's mixer is
 /// a full console filling most of the screen, not a thin strip pinned to

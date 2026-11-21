@@ -20,7 +20,7 @@ struct ClickGuideSettingsView: View {
                 } header: {
                     Text("Click Sound")
                 } footer: {
-                    Text("Applies to both the Accent and Beat faders in the mixer.")
+                    Text("Applies to the Accent, 1/4, 1/8, and 1/16 faders in the mixer.")
                 }
 
                 Section {

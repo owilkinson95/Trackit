@@ -14,7 +14,6 @@ enum SetlistFileTransfer {
         var key: String
         var bpm: Double
         var beatsPerBar: Int
-        var subdivision: Int
         var notes: String
     }
 
@@ -53,7 +52,7 @@ enum SetlistFileTransfer {
         let exportedSongs = songs.map { song in
             ExportedSong(
                 title: song.title, artist: song.artist, key: song.key,
-                bpm: song.bpm, beatsPerBar: song.beatsPerBar, subdivision: song.subdivision,
+                bpm: song.bpm, beatsPerBar: song.beatsPerBar,
                 notes: song.notes
             )
         }
@@ -90,7 +89,7 @@ enum SetlistFileTransfer {
         for exported in package.songs {
             let song = Song(
                 title: exported.title, artist: exported.artist, key: exported.key,
-                bpm: exported.bpm, beatsPerBar: exported.beatsPerBar, subdivision: exported.subdivision,
+                bpm: exported.bpm, beatsPerBar: exported.beatsPerBar,
                 notes: exported.notes
             )
             context.insert(song)

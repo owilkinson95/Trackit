@@ -5,10 +5,9 @@ import Combine
 /// Quarter (1/4), Eighth (1/8), Sixteenth (1/16), and Guide — each with
 /// their own looping buffer and their own mixer fader, so the downbeat
 /// accent and each subdivision tier can be balanced independently, like
-/// Playback's mixer. Which tiers actually have ticks in them depends on
-/// the pattern's subdivision (see `ClickGenerator.Layer`); at the coarsest
-/// subdivision, Eighth/Sixteenth are simply silent, so their faders have
-/// no audible effect until a finer subdivision is chosen.
+/// Playback's mixer. The click always generates a full sixteenth-note
+/// grid, so every tier always has ticks in it — the mixer faders are the
+/// only thing that decides what's actually audible.
 /// Changing tempo/time-signature/sound/guide mode rebuilds all the buffers
 /// and reschedules at the next loop boundary rather than mid-bar, so the
 /// click never stutters.

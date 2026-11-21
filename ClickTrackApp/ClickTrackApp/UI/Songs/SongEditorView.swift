@@ -14,8 +14,6 @@ struct SongEditorView: View {
     @State private var bpmText: String = ""
     @State private var showingTempoSearch = false
 
-    private let subdivisionLabels = ["1/4", "1/8", "1/8T", "1/16"]
-
     var body: some View {
         Form {
             Section("Song") {
@@ -48,13 +46,6 @@ struct SongEditorView: View {
                 }
 
                 Stepper("Beats per bar: \(song.beatsPerBar)", value: $song.beatsPerBar, in: 1...12)
-
-                Picker("Subdivision", selection: $song.subdivision) {
-                    ForEach(Array(subdivisionLabels.enumerated()), id: \.offset) { index, label in
-                        Text(label).tag(index + 1)
-                    }
-                }
-                .pickerStyle(.segmented)
             }
 
             Section("Notes") {

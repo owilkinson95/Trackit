@@ -149,10 +149,13 @@ struct TimelineView: View {
     /// The infinite click's rhythm, drawn as a continuous tick "waveform"
     /// across the whole strip, one bar at a time on the same per-bar grid
     /// as the section blocks above it — so the two stay aligned as you
-    /// scroll. Tick height encodes each beat's role (accent, beat,
-    /// subdivision), colored to match the Accent/Beat mixer faders. This
-    /// is a generated illustration of the loop's rhythm, not a rendering
-    /// of real audio.
+    /// scroll. The click always generates a fixed sixteenth-note grid (see
+    /// `ClickGenerator`), so this always shows all four tiers — Accent,
+    /// 1/4, 1/8, 1/16 — regardless of which mixer faders are turned up.
+    /// This is a generated illustration of the loop's rhythm, not a
+    /// rendering of real audio.
+    private static let ticksPerBeat = 4
+
     private func clickTicks(totalBars: Int) -> some View {
         HStack(spacing: 0) {
             ForEach(0..<totalBars, id: \.self) { _ in
@@ -162,7 +165,7 @@ struct TimelineView: View {
     }
 
     private var clickBar: some View {
-        let ticksPerBar = max(engine.pattern.beatsPerBar * engine.pattern.subdivision, 1)
+        let ticksPerBar = max(engine.pattern.beatsPerBar * Self.ticksPerBeat, 1)
         return HStack(spacing: 3) {
             ForEach(0..<ticksPerBar, id: \.self) { tick in
                 clickTick(tick: tick)
@@ -173,9 +176,9 @@ struct TimelineView: View {
 
     private func clickTick(tick: Int) -> some View {
         let isAccent = engine.pattern.accentFirstBeat && tick == 0
-        let isStrong = tick % engine.pattern.subdivision == 0
-        let height: CGFloat = isAccent ? 46 : (isStrong ? 30 : 16)
-        let color: Color = isAccent ? .green.opacity(0.8) : .white.opacity(isStrong ? 0.45 : 0.2)
+        let posInBeat = tick % Self.ticksPerBeat
+        let height: CGFloat = isAccent ? 46 : (posInBeat == 0 ? 30 : (posInBeat == 2 ? 22 : 14))
+        let color: Color = isAccent ? .green.opacity(0.8) : .white.opacity(posInBeat == 0 ? 0.45 : (posInBeat == 2 ? 0.3 : 0.18))
         return RoundedRectangle(cornerRadius: 1.5)
             .fill(color)
             .frame(width: 3, height: height)
