@@ -21,7 +21,7 @@ struct MixerView: View {
     private static let trackColors: [Color] = [.cyan, .orange, .purple, .pink, .mint, .indigo, .teal]
     /// Fixed-height chrome around each fader (solo button, mute button,
     /// label, spacing) that isn't available for the fader's own travel.
-    private static let stripChrome: CGFloat = 108
+    private static let stripChrome: CGFloat = 132
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -167,6 +167,7 @@ private struct FaderStrip: View {
                     .font(.system(size: 14))
                     .foregroundColor(color)
                     .frame(width: 72)
+                    .onAppear { nameText = name }
             } else {
                 Text(name)
                     .font(.system(size: 14, weight: .semibold))
