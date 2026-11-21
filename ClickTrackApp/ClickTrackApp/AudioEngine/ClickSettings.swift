@@ -7,6 +7,10 @@ enum ClickSound: String, CaseIterable, Identifiable, Codable {
     case woodblock
     case digital
     case clave
+    case cowbell
+    case hiHat
+    case rimshot
+    case beep
 
     var id: String { rawValue }
 
@@ -16,6 +20,10 @@ enum ClickSound: String, CaseIterable, Identifiable, Codable {
         case .woodblock: return "Woodblock"
         case .digital: return "Digital"
         case .clave: return "Clave"
+        case .cowbell: return "Cowbell"
+        case .hiHat: return "Hi-Hat"
+        case .rimshot: return "Rimshot"
+        case .beep: return "Beep"
         }
     }
 }

@@ -148,6 +148,10 @@ private extension ClickSound {
         case .woodblock: return 0.02
         case .digital: return 0.012
         case .clave: return 0.01
+        case .cowbell: return 0.05
+        case .hiHat: return 0.028
+        case .rimshot: return 0.022
+        case .beep: return 0.05
         }
     }
 
@@ -157,6 +161,10 @@ private extension ClickSound {
         case .woodblock: return 0.006
         case .digital: return 0.003
         case .clave: return 0.0025
+        case .cowbell: return 0.016
+        case .hiHat: return 0.006
+        case .rimshot: return 0.005
+        case .beep: return 0.018
         }
     }
 
@@ -172,6 +180,24 @@ private extension ClickSound {
             return Float(fundamental + overtone)
         case .clave:
             return Float.random(in: -1...1)
+        case .cowbell:
+            // Two square tones at an inharmonic ratio sum into a metallic
+            // clank — the classic analog-drum-machine cowbell trick.
+            let a = sin(2.0 * Double.pi * frequency * t) >= 0 ? 1.0 : -1.0
+            let b = sin(2.0 * Double.pi * frequency * 1.47 * t) >= 0 ? 1.0 : -1.0
+            return Float((a + b) / 2)
+        case .hiHat:
+            // Same noise burst as Clave, but shorter and quieter (see
+            // tickDurationSeconds/decayConstant) so it reads as a closed
+            // hi-hat tick rather than a sharp wood-block snap.
+            return Float.random(in: -1...1)
+        case .rimshot:
+            // A noise crack layered over a low thump, like a snare rim click.
+            let noise = Double.random(in: -1...1)
+            let thump = sin(2.0 * Double.pi * 180 * t)
+            return Float(noise * 0.6 + thump * 0.4)
+        case .beep:
+            return Float(sin(2.0 * Double.pi * frequency * t))
         }
     }
 }
