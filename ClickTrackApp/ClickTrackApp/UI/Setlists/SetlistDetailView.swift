@@ -18,6 +18,14 @@ struct SetlistDetailView: View {
 
     var body: some View {
         List {
+            if !setlist.items.isEmpty {
+                NavigationLink {
+                    PerformanceView(setlist: setlist)
+                } label: {
+                    Label("Start Performance", systemImage: "play.rectangle.fill")
+                        .foregroundStyle(.green)
+                }
+            }
             ForEach(setlist.sortedItems) { item in
                 if let song = item.song {
                     Button {

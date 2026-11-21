@@ -15,6 +15,12 @@ final class Song {
     @Relationship(deleteRule: .cascade, inverse: \SetlistItem.song)
     var setlistItems: [SetlistItem] = []
 
+    @Relationship(deleteRule: .cascade, inverse: \Track.song)
+    var tracks: [Track] = []
+
+    @Relationship(deleteRule: .cascade, inverse: \SongSection.song)
+    var sections: [SongSection] = []
+
     init(
         title: String,
         artist: String = "",
@@ -36,5 +42,30 @@ final class Song {
 
     var pattern: ClickGenerator.Pattern {
         ClickGenerator.Pattern(bpm: bpm, beatsPerBar: beatsPerBar, subdivision: subdivision, accentFirstBeat: true)
+    }
+
+    var sortedTracks: [Track] {
+        tracks.sorted { $0.order < $1.order }
+    }
+
+    var sortedSections: [SongSection] {
+        sections.sorted { $0.order < $1.order }
+    }
+
+    /// Total bars across all sections, used to derive a nominal song length
+    /// (there's no audio file yet to read a real duration from).
+    var totalBars: Int {
+        sections.reduce(0) { $0 + $1.lengthBars }
+    }
+
+    var nominalDurationSeconds: Double {
+        Double(totalBars) * (60.0 / bpm) * Double(beatsPerBar)
+    }
+
+    /// A deterministic, song-specific hue so each setlist carousel card gets
+    /// a distinct color without needing real album art.
+    var cardHue: Double {
+        let hash = title.unicodeScalars.reduce(0) { ($0 &* 31) &+ Int($1.value) }
+        return Double(abs(hash) % 360) / 360.0
     }
 }

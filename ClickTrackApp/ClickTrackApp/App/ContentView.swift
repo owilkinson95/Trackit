@@ -27,5 +27,5 @@ struct ContentView: View {
 #Preview {
     ContentView()
         .environmentObject(ClickEngine())
-        .modelContainer(for: [Song.self, Setlist.self, SetlistItem.self], inMemory: true)
+        .modelContainer(for: [Song.self, Setlist.self, SetlistItem.self, Track.self, SongSection.self], inMemory: true)
 }

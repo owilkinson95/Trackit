@@ -26,19 +26,37 @@ final class ClickEngine: ObservableObject {
     /// The beat (0-based, within the bar) currently sounding — drives the
     /// visual beat indicator. Only meaningful while `isPlaying`.
     @Published private(set) var currentBeat = 0
+    /// Seconds since Play was pressed — drives the elapsed-time display and
+    /// the performance-screen playhead. Resets on stop.
+    @Published private(set) var elapsedSeconds: Double = 0
+    @Published var clickVolume: Double = ClickEngine.loadDouble(key: ClickEngine.clickVolumeKey, default: 0.8) {
+        didSet { persistDouble(Self.clickVolumeKey, clickVolume); updateClickOutputVolume() }
+    }
+    @Published var clickMuted = false {
+        didSet { updateClickOutputVolume() }
+    }
+    /// Scales everything in the mix — right now that's just the click,
+    /// since there's no stem-audio playback engine yet, but this is where
+    /// that mix-down happens once there is one.
+    @Published var masterVolume: Double = ClickEngine.loadDouble(key: ClickEngine.masterVolumeKey, default: 1.0) {
+        didSet { persistDouble(Self.masterVolumeKey, masterVolume); updateClickOutputVolume() }
+    }
 
     private let engine = AVAudioEngine()
     private let player = AVAudioPlayerNode()
     private var isGraphReady = false
     private var connectedChannelCount = 2
-    private var beatTimer: Timer?
+    private var transportTimer: Timer?
 
     private static let clickChannelsKey = "clickOutputChannels"
+    private static let clickVolumeKey = "clickVolume"
+    private static let masterVolumeKey = "masterVolume"
 
     init() {
         clickChannels = Self.loadClickChannels()
         engine.attach(player)
         connectGraph(channelCount: connectedChannelCount)
+        updateClickOutputVolume()
 
         NotificationCenter.default.addObserver(
             forName: .AVAudioEngineConfigurationChange, object: engine, queue: .main
@@ -63,7 +81,7 @@ final class ClickEngine: ObservableObject {
             scheduleLoop()
             player.play()
             isPlaying = true
-            startBeatIndicator()
+            startTransportClock()
         } catch {
             print("ClickEngine failed to start: \(error)")
         }
@@ -73,7 +91,7 @@ final class ClickEngine: ObservableObject {
         guard isPlaying else { return }
         player.stop()
         isPlaying = false
-        stopBeatIndicator()
+        stopTransportClock()
     }
 
     /// Apply a new tempo/time-signature. If currently playing, restarts the
@@ -85,7 +103,7 @@ final class ClickEngine: ObservableObject {
             player.stop()
             scheduleLoop()
             player.play()
-            startBeatIndicator()
+            startTransportClock()
         }
     }
 
@@ -130,26 +148,35 @@ final class ClickEngine: ObservableObject {
         player.scheduleBuffer(buffer, at: nil, options: .loops)
     }
 
-    /// Drives `currentBeat` on a plain Timer rather than sample-accurate
-    /// engine timing — fine for a visual cue (unlike the audio itself,
-    /// where any drift at all would be unacceptable).
-    private func startBeatIndicator() {
+    /// Drives `currentBeat` and `elapsedSeconds` on a plain Timer rather than
+    /// sample-accurate engine timing — fine for a visual cue and a playhead
+    /// (unlike the audio itself, where any drift at all would be
+    /// unacceptable).
+    private func startTransportClock() {
+        elapsedSeconds = 0
         currentBeat = 0
-        beatTimer?.invalidate()
-        let interval = 60.0 / pattern.bpm
+        transportTimer?.invalidate()
+        let secondsPerBeat = 60.0 / pattern.bpm
         let beatsPerBar = pattern.beatsPerBar
-        beatTimer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
+        let tickInterval = 0.05
+        transportTimer = Timer.scheduledTimer(withTimeInterval: tickInterval, repeats: true) { [weak self] _ in
             Task { @MainActor in
                 guard let self else { return }
-                self.currentBeat = (self.currentBeat + 1) % beatsPerBar
+                self.elapsedSeconds += tickInterval
+                self.currentBeat = Int(self.elapsedSeconds / secondsPerBeat) % beatsPerBar
             }
         }
     }
 
-    private func stopBeatIndicator() {
-        beatTimer?.invalidate()
-        beatTimer = nil
+    private func stopTransportClock() {
+        transportTimer?.invalidate()
+        transportTimer = nil
         currentBeat = 0
+        elapsedSeconds = 0
+    }
+
+    private func updateClickOutputVolume() {
+        player.volume = clickMuted ? 0 : Float(clickVolume * masterVolume)
     }
 
     private static func loadClickChannels() -> Set<Int> {
@@ -163,5 +190,13 @@ final class ClickEngine: ObservableObject {
     private func persistClickChannels() {
         let value = clickChannels.sorted().map(String.init).joined(separator: ",")
         UserDefaults.standard.set(value, forKey: Self.clickChannelsKey)
+    }
+
+    private static func loadDouble(key: String, default defaultValue: Double) -> Double {
+        UserDefaults.standard.object(forKey: key) as? Double ?? defaultValue
+    }
+
+    private func persistDouble(_ key: String, _ value: Double) {
+        UserDefaults.standard.set(value, forKey: key)
     }
 }

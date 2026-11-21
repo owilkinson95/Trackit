@@ -17,7 +17,7 @@ struct ClickTrackApp: App {
         #if os(macOS)
         .windowResizability(.contentSize)
         #endif
-        .modelContainer(for: [Song.self, Setlist.self, SetlistItem.self])
+        .modelContainer(for: [Song.self, Setlist.self, SetlistItem.self, Track.self, SongSection.self])
         .commands {
             CommandMenu("Playback") {
                 Button(engine.isPlaying ? "Stop" : "Play") {

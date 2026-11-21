@@ -78,6 +78,7 @@ struct SongEditorView: View {
                     commitBPMText()
                     if isNew {
                         modelContext.insert(song)
+                        seedDefaultTracks()
                     }
                     dismiss()
                 }
@@ -102,5 +103,16 @@ struct SongEditorView: View {
 
     private func formatted(_ bpm: Double) -> String {
         bpm.truncatingRemainder(dividingBy: 1) == 0 ? String(Int(bpm)) : String(format: "%.1f", bpm)
+    }
+
+    /// A sensible starting point for the mixer — common worship multitrack
+    /// stem names — so a new song's performance view isn't empty. Purely
+    /// placeholders until real stem audio exists; freely renamed or removed.
+    private func seedDefaultTracks() {
+        let defaultNames = ["Guide", "Drums", "Perc", "Bass", "Keys", "Loops"]
+        for (index, name) in defaultNames.enumerated() {
+            let track = Track(name: name, order: index, song: song)
+            modelContext.insert(track)
+        }
     }
 }
