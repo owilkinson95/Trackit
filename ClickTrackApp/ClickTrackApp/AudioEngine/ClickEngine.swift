@@ -23,11 +23,15 @@ final class ClickEngine: ObservableObject {
             if isPlaying { scheduleLoop() }
         }
     }
+    /// The beat (0-based, within the bar) currently sounding — drives the
+    /// visual beat indicator. Only meaningful while `isPlaying`.
+    @Published private(set) var currentBeat = 0
 
     private let engine = AVAudioEngine()
     private let player = AVAudioPlayerNode()
     private var isGraphReady = false
     private var connectedChannelCount = 2
+    private var beatTimer: Timer?
 
     private static let clickChannelsKey = "clickOutputChannels"
 
@@ -59,6 +63,7 @@ final class ClickEngine: ObservableObject {
             scheduleLoop()
             player.play()
             isPlaying = true
+            startBeatIndicator()
         } catch {
             print("ClickEngine failed to start: \(error)")
         }
@@ -68,6 +73,7 @@ final class ClickEngine: ObservableObject {
         guard isPlaying else { return }
         player.stop()
         isPlaying = false
+        stopBeatIndicator()
     }
 
     /// Apply a new tempo/time-signature. If currently playing, restarts the
@@ -79,6 +85,7 @@ final class ClickEngine: ObservableObject {
             player.stop()
             scheduleLoop()
             player.play()
+            startBeatIndicator()
         }
     }
 
@@ -121,6 +128,28 @@ final class ClickEngine: ObservableObject {
             sampleRate: ClickGenerator.sampleRate
         )
         player.scheduleBuffer(buffer, at: nil, options: .loops)
+    }
+
+    /// Drives `currentBeat` on a plain Timer rather than sample-accurate
+    /// engine timing — fine for a visual cue (unlike the audio itself,
+    /// where any drift at all would be unacceptable).
+    private func startBeatIndicator() {
+        currentBeat = 0
+        beatTimer?.invalidate()
+        let interval = 60.0 / pattern.bpm
+        let beatsPerBar = pattern.beatsPerBar
+        beatTimer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
+            Task { @MainActor in
+                guard let self else { return }
+                self.currentBeat = (self.currentBeat + 1) % beatsPerBar
+            }
+        }
+    }
+
+    private func stopBeatIndicator() {
+        beatTimer?.invalidate()
+        beatTimer = nil
+        currentBeat = 0
     }
 
     private static func loadClickChannels() -> Set<Int> {

@@ -25,6 +25,8 @@ struct TransportView: View {
 
                 bpmDisplay
 
+                beatIndicator
+
                 HStack(spacing: 16) {
                     stepper(title: "Beats/Bar", value: engine.pattern.beatsPerBar, range: 1...12) { newValue in
                         apply { $0.beatsPerBar = newValue }
@@ -74,6 +76,17 @@ struct TransportView: View {
             bpmText = formatted(newValue)
         }
         .onAppear { bpmText = formatted(engine.pattern.bpm) }
+    }
+
+    private var beatIndicator: some View {
+        HStack(spacing: 10) {
+            ForEach(0..<engine.pattern.beatsPerBar, id: \.self) { beat in
+                Circle()
+                    .fill(engine.isPlaying && beat == engine.currentBeat ? (beat == 0 ? Color.green : Color.white) : Color.gray.opacity(0.25))
+                    .frame(width: 14, height: 14)
+            }
+        }
+        .animation(.easeOut(duration: 0.1), value: engine.currentBeat)
     }
 
     private var subdivisionPicker: some View {
