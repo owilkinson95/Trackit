@@ -32,9 +32,8 @@ struct PerformanceView: View {
                     TimelineView(song: currentSong, engine: engine)
                         .padding(.horizontal)
 
-                    Spacer(minLength: 0)
-
                     MixerView(engine: engine, song: currentSong)
+                        .frame(maxHeight: .infinity)
                 } else {
                     Spacer()
                     Text("Add songs to this setlist to start a performance.")
@@ -89,12 +88,12 @@ struct PerformanceView: View {
             Button {
                 engine.isPlaying ? engine.stop() : engine.start()
             } label: {
-                RoundedRectangle(cornerRadius: 10)
+                RoundedRectangle(cornerRadius: 12)
                     .fill(engine.isPlaying ? Color.red : Color.green)
-                    .frame(width: 56, height: 40)
+                    .frame(width: 68, height: 48)
                     .overlay(
                         Image(systemName: engine.isPlaying ? "stop.fill" : "play.fill")
-                            .font(.system(size: 16, weight: .bold))
+                            .font(.system(size: 19, weight: .bold))
                             .foregroundColor(.white)
                     )
             }
@@ -103,21 +102,21 @@ struct PerformanceView: View {
             toolbarIconButton("slider.horizontal.3") { showingRouting = true }
             toolbarIconButton("pencil") { showingEditor = true }
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 10)
-        .background(RoundedRectangle(cornerRadius: 16).fill(Color.white.opacity(0.06)))
+        .padding(.horizontal, 20)
+        .padding(.vertical, 14)
+        .background(RoundedRectangle(cornerRadius: 18).fill(Color.white.opacity(0.06)))
     }
 
     private var divider: some View {
-        Rectangle().fill(Color.white.opacity(0.12)).frame(width: 1, height: 28)
+        Rectangle().fill(Color.white.opacity(0.12)).frame(width: 1, height: 36)
     }
 
     private func statStack(_ primary: String, _ secondary: String) -> some View {
-        VStack(spacing: 1) {
+        VStack(spacing: 2) {
             Text(primary)
-                .font(.system(size: 17, weight: .bold, design: .rounded))
+                .font(.system(size: 22, weight: .bold, design: .rounded))
             Text(secondary)
-                .font(.system(size: 9, weight: .medium))
+                .font(.system(size: 11, weight: .medium))
                 .foregroundStyle(.secondary)
                 .tracking(0.5)
         }
@@ -126,8 +125,8 @@ struct PerformanceView: View {
     private func toolbarIconButton(_ systemImage: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Image(systemName: systemImage)
-                .font(.system(size: 16))
-                .frame(width: 36, height: 36)
+                .font(.system(size: 18))
+                .frame(width: 44, height: 44)
                 .background(Circle().fill(Color.white.opacity(0.08)))
                 .foregroundColor(.white.opacity(0.85))
         }

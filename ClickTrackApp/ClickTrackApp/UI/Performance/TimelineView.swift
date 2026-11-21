@@ -16,24 +16,25 @@ struct TimelineView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             HStack {
-                Text("Arrangement").font(.caption).foregroundStyle(.secondary)
+                Text("Arrangement").font(.subheadline).foregroundStyle(.secondary)
                 Spacer()
                 Button {
                     showingAddSection = true
                 } label: {
                     Label("Add Section", systemImage: "plus")
-                        .font(.caption2)
+                        .font(.subheadline)
                 }
                 .buttonStyle(.plain)
             }
 
             if song.sections.isEmpty {
                 Text("No sections yet — tap Add Section to sketch out the arrangement.")
-                    .font(.caption2)
+                    .font(.footnote)
                     .foregroundStyle(.secondary)
-                    .frame(height: 56)
+                    .frame(height: 72)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(RoundedRectangle(cornerRadius: 10).fill(Color.white.opacity(0.05)))
+                    .padding(.horizontal, 12)
+                    .background(RoundedRectangle(cornerRadius: 12).fill(Color.white.opacity(0.05)))
             } else {
                 GeometryReader { geo in
                     ZStack(alignment: .leading) {
@@ -51,7 +52,7 @@ struct TimelineView: View {
                         }
                     }
                 }
-                .frame(height: 56)
+                .frame(height: 72)
             }
         }
         .alert("New Section", isPresented: $showingAddSection) {
@@ -71,24 +72,24 @@ struct TimelineView: View {
     private func sectionBlock(_ section: SongSection, index: Int, totalBars: Int, totalWidth: CGFloat) -> some View {
         let widthFraction = Double(section.lengthBars) / Double(totalBars)
         let blockWidth = max(totalWidth * widthFraction - 2, 4)
-        return VStack(spacing: 3) {
+        return VStack(spacing: 4) {
             Text("\(index + 1)")
-                .font(.system(size: 9, weight: .bold))
+                .font(.system(size: 12, weight: .bold))
                 .foregroundColor(.black)
-                .frame(width: 16, height: 16)
+                .frame(width: 22, height: 22)
                 .background(Circle().fill(color(for: section.colorName)))
 
-            RoundedRectangle(cornerRadius: 4)
+            RoundedRectangle(cornerRadius: 5)
                 .fill(color(for: section.colorName).opacity(0.35))
                 .overlay(tickTexture(color: color(for: section.colorName)))
                 .overlay(
                     Text(section.label)
-                        .font(.system(size: 9, weight: .semibold))
+                        .font(.system(size: 12, weight: .semibold))
                         .foregroundColor(.white)
                         .lineLimit(1)
-                        .padding(.horizontal, 4)
+                        .padding(.horizontal, 5)
                 )
-                .frame(width: blockWidth, height: 32)
+                .frame(width: blockWidth, height: 42)
         }
         .frame(width: blockWidth)
     }
