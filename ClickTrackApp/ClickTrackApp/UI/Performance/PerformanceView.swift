@@ -7,6 +7,8 @@ struct PerformanceView: View {
     @Bindable var setlist: Setlist
 
     @State private var currentSong: Song?
+    @State private var showingRouting = false
+    @State private var showingEditor = false
 
     private var songs: [Song] {
         setlist.sortedItems.compactMap { $0.song }
@@ -14,10 +16,10 @@ struct PerformanceView: View {
 
     var body: some View {
         ZStack {
-            Color.black.ignoresSafeArea()
+            Color(red: 0.035, green: 0.035, blue: 0.04).ignoresSafeArea()
 
-            VStack(spacing: 16) {
-                header
+            VStack(spacing: 14) {
+                toolbar
                     .padding(.horizontal)
                     .padding(.top, 8)
 
@@ -33,7 +35,6 @@ struct PerformanceView: View {
                     Spacer(minLength: 0)
 
                     MixerView(engine: engine, song: currentSong)
-                        .padding(.bottom, 12)
                 } else {
                     Spacer()
                     Text("Add songs to this setlist to start a performance.")
@@ -55,24 +56,82 @@ struct PerformanceView: View {
         .onDisappear {
             engine.stop()
         }
-    }
-
-    private var header: some View {
-        HStack {
+        .sheet(isPresented: $showingRouting) {
+            OutputRoutingView()
+        }
+        .sheet(isPresented: $showingEditor) {
             if let currentSong {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(currentSong.title).font(.headline)
-                    Text("\(formatted(currentSong.bpm)) BPM · \(currentSong.beatsPerBar)/\(currentSong.subdivision == 1 ? 4 : currentSong.beatsPerBar)")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                NavigationStack {
+                    SongEditorView(song: currentSong, isNew: false)
                 }
             }
-            Spacer()
-            Text(elapsedText)
-                .font(.system(.body, design: .monospaced))
-                .foregroundStyle(.secondary)
-            playStopButton
         }
+    }
+
+    /// One dense dark bar — tempo, elapsed/total, transport, and quick
+    /// actions — matching Playback's compact toolbar rather than floating
+    /// text on a bare background.
+    private var toolbar: some View {
+        HStack(spacing: 16) {
+            if let currentSong {
+                statStack(formatted(currentSong.bpm), "BPM")
+                divider
+                statStack("\(currentSong.beatsPerBar)/4", "TIME")
+                divider
+            }
+
+            statStack(elapsedText, totalText)
+
+            Spacer()
+
+            toolbarIconButton("gobackward") { restart() }
+
+            Button {
+                engine.isPlaying ? engine.stop() : engine.start()
+            } label: {
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(engine.isPlaying ? Color.red : Color.green)
+                    .frame(width: 56, height: 40)
+                    .overlay(
+                        Image(systemName: engine.isPlaying ? "stop.fill" : "play.fill")
+                            .font(.system(size: 16, weight: .bold))
+                            .foregroundColor(.white)
+                    )
+            }
+            .buttonStyle(.plain)
+
+            toolbarIconButton("slider.horizontal.3") { showingRouting = true }
+            toolbarIconButton("pencil") { showingEditor = true }
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 10)
+        .background(RoundedRectangle(cornerRadius: 16).fill(Color.white.opacity(0.06)))
+    }
+
+    private var divider: some View {
+        Rectangle().fill(Color.white.opacity(0.12)).frame(width: 1, height: 28)
+    }
+
+    private func statStack(_ primary: String, _ secondary: String) -> some View {
+        VStack(spacing: 1) {
+            Text(primary)
+                .font(.system(size: 17, weight: .bold, design: .rounded))
+            Text(secondary)
+                .font(.system(size: 9, weight: .medium))
+                .foregroundStyle(.secondary)
+                .tracking(0.5)
+        }
+    }
+
+    private func toolbarIconButton(_ systemImage: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Image(systemName: systemImage)
+                .font(.system(size: 16))
+                .frame(width: 36, height: 36)
+                .background(Circle().fill(Color.white.opacity(0.08)))
+                .foregroundColor(.white.opacity(0.85))
+        }
+        .buttonStyle(.plain)
     }
 
     private var elapsedText: String {
@@ -80,18 +139,16 @@ struct PerformanceView: View {
         return String(format: "%02d:%02d", elapsed / 60, elapsed % 60)
     }
 
-    private var playStopButton: some View {
-        Button {
-            engine.isPlaying ? engine.stop() : engine.start()
-        } label: {
-            Image(systemName: engine.isPlaying ? "stop.fill" : "play.fill")
-                .font(.title2)
-                .frame(width: 44, height: 44)
-                .background(engine.isPlaying ? Color.red : Color.green)
-                .foregroundColor(.white)
-                .clipShape(Circle())
-        }
-        .buttonStyle(.plain)
+    private var totalText: String {
+        guard let currentSong, currentSong.nominalDurationSeconds > 0 else { return "--:--" }
+        let total = Int(currentSong.nominalDurationSeconds)
+        return String(format: "%02d:%02d", total / 60, total % 60)
+    }
+
+    private func restart() {
+        guard engine.isPlaying else { return }
+        engine.stop()
+        engine.start()
     }
 
     private func selectSong(_ song: Song?) {

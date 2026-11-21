@@ -31,24 +31,27 @@ struct TimelineView: View {
                 Text("No sections yet — tap Add Section to sketch out the arrangement.")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
-                    .frame(height: 44)
+                    .frame(height: 56)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(RoundedRectangle(cornerRadius: 10).fill(Color.white.opacity(0.05)))
             } else {
                 GeometryReader { geo in
                     ZStack(alignment: .leading) {
                         HStack(spacing: 2) {
-                            ForEach(song.sortedSections) { section in
-                                sectionBlock(section, totalBars: max(song.totalBars, 1), totalWidth: geo.size.width)
+                            ForEach(Array(song.sortedSections.enumerated()), id: \.element.id) { index, section in
+                                sectionBlock(section, index: index, totalBars: max(song.totalBars, 1), totalWidth: geo.size.width)
                             }
                         }
                         if engine.isPlaying {
                             Rectangle()
                                 .fill(Color.white)
                                 .frame(width: 2)
+                                .shadow(color: .white.opacity(0.6), radius: 3)
                                 .offset(x: playheadOffset(totalWidth: geo.size.width))
                         }
                     }
                 }
-                .frame(height: 44)
+                .frame(height: 56)
             }
         }
         .alert("New Section", isPresented: $showingAddSection) {
@@ -65,18 +68,43 @@ struct TimelineView: View {
         }
     }
 
-    private func sectionBlock(_ section: SongSection, totalBars: Int, totalWidth: CGFloat) -> some View {
+    private func sectionBlock(_ section: SongSection, index: Int, totalBars: Int, totalWidth: CGFloat) -> some View {
         let widthFraction = Double(section.lengthBars) / Double(totalBars)
-        return RoundedRectangle(cornerRadius: 4)
-            .fill(color(for: section.colorName))
-            .frame(width: max(totalWidth * widthFraction - 2, 4), height: 44)
-            .overlay(
-                Text(section.label)
-                    .font(.caption2.weight(.semibold))
-                    .foregroundColor(.black.opacity(0.8))
-                    .lineLimit(1)
-                    .padding(.horizontal, 4)
-            )
+        let blockWidth = max(totalWidth * widthFraction - 2, 4)
+        return VStack(spacing: 3) {
+            Text("\(index + 1)")
+                .font(.system(size: 9, weight: .bold))
+                .foregroundColor(.black)
+                .frame(width: 16, height: 16)
+                .background(Circle().fill(color(for: section.colorName)))
+
+            RoundedRectangle(cornerRadius: 4)
+                .fill(color(for: section.colorName).opacity(0.35))
+                .overlay(tickTexture(color: color(for: section.colorName)))
+                .overlay(
+                    Text(section.label)
+                        .font(.system(size: 9, weight: .semibold))
+                        .foregroundColor(.white)
+                        .lineLimit(1)
+                        .padding(.horizontal, 4)
+                )
+                .frame(width: blockWidth, height: 32)
+        }
+        .frame(width: blockWidth)
+    }
+
+    /// Purely decorative repeating tick marks to suggest the dense,
+    /// grid-like texture of Playback's arrangement bands — not a rendering
+    /// of real audio, since there's no audio file to analyze yet.
+    private func tickTexture(color: Color) -> some View {
+        GeometryReader { geo in
+            HStack(spacing: 3) {
+                ForEach(0..<max(Int(geo.size.width / 5), 0), id: \.self) { _ in
+                    Rectangle().fill(color.opacity(0.4)).frame(width: 1)
+                }
+            }
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 4))
     }
 
     private func playheadOffset(totalWidth: CGFloat) -> CGFloat {

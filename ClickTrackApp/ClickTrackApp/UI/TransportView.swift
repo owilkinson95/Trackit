@@ -12,7 +12,7 @@ struct TransportView: View {
 
     var body: some View {
         ZStack {
-            Color.black.ignoresSafeArea()
+            Color(red: 0.035, green: 0.035, blue: 0.04).ignoresSafeArea()
 
             VStack(spacing: 32) {
                 Spacer()
